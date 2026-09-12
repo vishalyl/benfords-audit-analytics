@@ -167,3 +167,34 @@ The following decisions are pre-made by `plan/00_MASTER_PLAN.md` §7 and require
   against `reports/metrics/model_metrics.json` and `data/dashboard/kpi_summary.json`.
 - **Reversible:** yes — more of the prose could be placeholder-ized later if the
   narrative numbers ever need to change with the data.
+
+### D-0006 — Personal-path scrub check adapted: the literal "visha" grep also matches the owner's real name
+- **Stage:** 13
+- **Date:** 2026-09-13
+- **Question:** Plan sec 13.3 check 3 specifies `git grep -i "visha\|C:\\Users"` must
+  return nothing in tracked files, intended to catch leaked local absolute paths
+  (`C:\Users\visha\...`). But the project owner's real name, "Y.L. Vishal", contains
+  "visha" as a substring — the literal check would flag every legitimate authorship
+  mention (`plan/00_MASTER_PLAN.md`'s own "Owner: Y.L. Vishal" line, `DECISIONS.md`,
+  gate reports, `reports/audit_findings_workpaper.pdf`'s "Prepared by" field). Should
+  the agent scrub the owner's name from the repo, or adapt the check?
+- **Options considered:**
+  1. Scrub "Vishal"/"visha" everywhere to satisfy the literal grep — removes legitimate
+     authorship attribution the user would presumably want kept.
+  2. Adapt `checks/gate_13.py`'s check to search for the actual leaked-path pattern
+     (`C:\Users\visha\`, `Premier Pro`) rather than the bare username, which catches
+     the real privacy/security concern the check exists for without penalizing the
+     person's name in an attribution field.
+- **Decision:** Option 2.
+- **Rationale:** The check's stated purpose (plan sec 13.2 publish checklist: "no
+  personal paths anywhere") is about leaked local filesystem structure, not about
+  removing the author's name from their own project. Running the adapted check did
+  find one real leak — `reports/gate_reports/gate_00.md` had printed the absolute
+  interpreter path from Stage 0 — which was fixed (replaced with `<repo-root>\...`).
+- **Impact:** `checks/gate_13.py` C3 greps for `C:\\Users\\visha\|Premier Pro` rather
+  than bare `visha`, scoped to exclude `plan/` (which legitimately states the owner's
+  name in its own header). `reports/gate_reports/gate_00.md` was edited to remove the
+  two leaked absolute-path lines.
+- **Reversible:** yes — the literal check can be restored if the user prefers the repo
+  to carry no name at all, at the cost of also stripping the "Prepared by" field from
+  the workpaper and the plan's own ownership line.

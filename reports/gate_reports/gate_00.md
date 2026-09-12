@@ -2,7 +2,7 @@
 
 Python version: `3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]`
 
-Interpreter: `C:\Users\visha\Premier Pro\EDITING\OneDrive\Desktop\fraud-detection\benfords-audit-analytics\.venv\Scripts\python.exe`
+Interpreter: `<repo-root>\.venv\Scripts\python.exe`
 
 Raw xlsx size (MB): 45.62
 
@@ -12,7 +12,7 @@ Sheet names found: ['Year 2009-2010', 'Year 2010-2011']
 
 ```
 [PASS] Python >= 3.10 sys.version_info(major=3, minor=11, micro=6, releaselevel='final', serial=0)
-[PASS] Interpreter is the project .venv C:\Users\visha\Premier Pro\EDITING\OneDrive\Desktop\fraud-detection\benfords-audit-analytics\.venv\Scripts\python.exe
+[PASS] Interpreter is the project .venv <repo-root>\.venv\Scripts\python.exe
 [PASS] import pandas 
 [PASS] import numpy 
 [PASS] import scipy 
