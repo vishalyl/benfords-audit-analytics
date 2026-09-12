@@ -1,0 +1,62 @@
+{
+  "n_base_rows": 1013930,
+  "n_injected": 16874,
+  "n_total": 1030804,
+  "anomaly_rate": 0.01637,
+  "volume_plan": {
+    "threshold_avoidance": 3671,
+    "duplicate": 3067,
+    "timing": 2534,
+    "digit_fabrication": 2534,
+    "extreme_outlier": 2534,
+    "round_number": 2534
+  },
+  "type_counts": {
+    "threshold_avoidance": 3671,
+    "duplicate": 3067,
+    "timing": 2534,
+    "digit_fabrication": 2534,
+    "extreme_outlier": 2534,
+    "round_number": 2534
+  },
+  "seed": 42,
+  "anti_tell_checks": {
+    "T3": true,
+    "T6": false,
+    "T7": true,
+    "T8": true
+  },
+  "contamination_matrix": {
+    "duplicate": {
+      "benford": "none",
+      "rules": "high",
+      "iforest": "low"
+    },
+    "threshold_avoidance": {
+      "benford": "moderate",
+      "rules": "high",
+      "iforest": "low-moderate"
+    },
+    "round_number": {
+      "benford": "moderate",
+      "rules": "high",
+      "iforest": "low"
+    },
+    "digit_fabrication": {
+      "benford": "high-segment-only",
+      "rules": "near-zero",
+      "iforest": "low"
+    },
+    "timing": {
+      "benford": "none",
+      "rules": "high",
+      "iforest": "low-moderate"
+    },
+    "extreme_outlier": {
+      "benford": "none",
+      "rules": "near-zero",
+      "iforest": "very-high"
+    }
+  },
+  "output_hash": "cc0ad79b99e19483"
+}
