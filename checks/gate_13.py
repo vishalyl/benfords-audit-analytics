@@ -107,8 +107,11 @@ def check() -> tuple[bool, list[str]]:
     # C3: no leaked personal file paths in tracked files (adapted — see DECISIONS.md D-0006:
     # a literal "visha" grep also matches the owner's real name "Vishal" in attribution
     # fields, which is legitimate; this checks for actual absolute local paths instead).
+    # Excludes plan/ (states the owner's name in its own header) and this file itself
+    # (necessarily contains the pattern below as a string literal in order to search for it).
+    leak_pattern = r"C:\\Users\\visha\|Premier Pro"
     result = subprocess.run(
-        ["git", "grep", "-il", r"C:\\Users\\visha\|Premier Pro", "--", ".", ":!plan"],
+        ["git", "grep", "-il", leak_pattern, "--", ".", ":!plan", ":!checks/gate_13.py"],
         capture_output=True, text=True,
     )
     hits = [l for l in result.stdout.splitlines() if l.strip()]

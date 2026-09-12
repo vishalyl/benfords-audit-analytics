@@ -18,13 +18,20 @@ REQUIRED_DIRS = [
 REQUIRED_FILES = ["config.yaml", "CLAUDE.md", ".gitignore", "requirements.txt"]
 
 
+def _redact(path_str: str) -> str:
+    """Replace the local repo-root prefix with a placeholder before writing to a
+    committed report — a gate report is published, and the absolute filesystem
+    path it would otherwise contain leaks the local username (DECISIONS.md D-0006)."""
+    return path_str.replace(str(REPO_ROOT), "<repo-root>")
+
+
 def main() -> int:
     failures: list[str] = []
     lines: list[str] = []
 
     def check(label: str, cond: bool, detail: str = "") -> None:
         status = "PASS" if cond else "FAIL"
-        lines.append(f"[{status}] {label} {detail}")
+        lines.append(f"[{status}] {label} {_redact(detail)}")
         if not cond:
             failures.append(label)
 
@@ -86,7 +93,7 @@ def main() -> int:
     with open(report_path, "w", encoding="utf-8") as fh:
         fh.write("# Stage 0 Gate Report — Environment Bootstrap\n\n")
         fh.write(f"Python version: `{sys.version}`\n\n")
-        fh.write(f"Interpreter: `{sys.executable}`\n\n")
+        fh.write(f"Interpreter: `{_redact(sys.executable)}`\n\n")
         fh.write(f"Raw xlsx size (MB): {raw_xlsx.stat().st_size / 1e6:.2f}\n\n" if raw_xlsx.exists() else "Raw xlsx: MISSING\n\n")
         fh.write(f"Sheet names found: {sheet_names}\n\n")
         fh.write("## Checks\n\n```\n" + "\n".join(lines) + "\n```\n\n")

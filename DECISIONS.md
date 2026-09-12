@@ -171,10 +171,11 @@ The following decisions are pre-made by `plan/00_MASTER_PLAN.md` §7 and require
 ### D-0006 — Personal-path scrub check adapted: the literal "visha" grep also matches the owner's real name
 - **Stage:** 13
 - **Date:** 2026-09-13
-- **Question:** Plan sec 13.3 check 3 specifies `git grep -i "visha\|C:\\Users"` must
-  return nothing in tracked files, intended to catch leaked local absolute paths
-  (`C:\Users\visha\...`). But the project owner's real name, "Y.L. Vishal", contains
-  "visha" as a substring — the literal check would flag every legitimate authorship
+- **Question:** Plan sec 13.3 check 3 specifies a case-insensitive grep for the
+  Windows username plus a generic `C:\Users` prefix, intended to catch leaked local
+  absolute filesystem paths pointing into this machine's home directory. But the
+  project owner's real name, "Y.L. Vishal", contains the username as a substring —
+  the literal check would flag every legitimate authorship
   mention (`plan/00_MASTER_PLAN.md`'s own "Owner: Y.L. Vishal" line, `DECISIONS.md`,
   gate reports, `reports/audit_findings_workpaper.pdf`'s "Prepared by" field). Should
   the agent scrub the owner's name from the repo, or adapt the check?
@@ -182,8 +183,9 @@ The following decisions are pre-made by `plan/00_MASTER_PLAN.md` §7 and require
   1. Scrub "Vishal"/"visha" everywhere to satisfy the literal grep — removes legitimate
      authorship attribution the user would presumably want kept.
   2. Adapt `checks/gate_13.py`'s check to search for the actual leaked-path pattern
-     (`C:\Users\visha\`, `Premier Pro`) rather than the bare username, which catches
-     the real privacy/security concern the check exists for without penalizing the
+     (this machine's home-directory prefix, e.g. the literal string baked into the
+     regex in `checks/gate_13.py`) rather than the bare username, which catches the
+     real privacy/security concern the check exists for without penalizing the
      person's name in an attribution field.
 - **Decision:** Option 2.
 - **Rationale:** The check's stated purpose (plan sec 13.2 publish checklist: "no
@@ -191,10 +193,13 @@ The following decisions are pre-made by `plan/00_MASTER_PLAN.md` §7 and require
   removing the author's name from their own project. Running the adapted check did
   find one real leak — `reports/gate_reports/gate_00.md` had printed the absolute
   interpreter path from Stage 0 — which was fixed (replaced with `<repo-root>\...`).
-- **Impact:** `checks/gate_13.py` C3 greps for `C:\\Users\\visha\|Premier Pro` rather
-  than bare `visha`, scoped to exclude `plan/` (which legitimately states the owner's
-  name in its own header). `reports/gate_reports/gate_00.md` was edited to remove the
-  two leaked absolute-path lines.
+- **Impact:** `checks/gate_13.py` C3 greps for the actual leaked-path pattern rather
+  than bare "visha", scoped to exclude `plan/` (which legitimately states the owner's
+  name in its own header) and its own source file (which necessarily contains that
+  pattern as a string literal to search for it). `checks/gate_00.py` was fixed to
+  redact the repo-root prefix from `sys.executable` before writing it into
+  `reports/gate_reports/gate_00.md`, since it had been silently re-leaking the
+  absolute path on every re-run.
 - **Reversible:** yes — the literal check can be restored if the user prefers the repo
   to carry no name at all, at the cost of also stripping the "Prepared by" field from
   the workpaper and the plan's own ownership line.
