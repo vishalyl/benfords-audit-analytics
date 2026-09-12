@@ -38,5 +38,49 @@
   "model_feature_importance.png": {
     "path": "reports/figures/model_feature_importance.png",
     "category": "models"
+  },
+  "threshold_f1_curve.png": {
+    "path": "reports/figures/threshold_f1_curve.png",
+    "category": "composite"
+  },
+  "complementary_analysis.png": {
+    "path": "reports/figures/complementary_analysis.png",
+    "category": "validation"
+  },
+  "composite_vs_anomaly_type.png": {
+    "path": "reports/figures/composite_vs_anomaly_type.png",
+    "category": "composite"
+  },
+  "pr_curve.png": {
+    "path": "reports/figures/pr_curve.png",
+    "category": "validation"
+  },
+  "roc_curve.png": {
+    "path": "reports/figures/roc_curve.png",
+    "category": "validation"
+  },
+  "precision_at_k.png": {
+    "path": "reports/figures/precision_at_k.png",
+    "category": "validation"
+  },
+  "confusion_matrix.png": {
+    "path": "reports/figures/confusion_matrix.png",
+    "category": "validation"
+  },
+  "method_comparison_heatmap.png": {
+    "path": "reports/figures/method_comparison_heatmap.png",
+    "category": "validation"
+  },
+  "threshold_sweep.png": {
+    "path": "reports/figures/threshold_sweep.png",
+    "category": "validation"
+  },
+  "score_by_type.png": {
+    "path": "reports/figures/score_by_type.png",
+    "category": "validation"
+  },
+  "recall_vs_effort.png": {
+    "path": "reports/figures/recall_vs_effort.png",
+    "category": "validation"
   }
 }

@@ -71,3 +71,69 @@ The following decisions are pre-made by `plan/00_MASTER_PLAN.md` §7 and require
   required)" and "instant-load summary (live now)".
 - **Reversible:** yes — the user can deploy the Streamlit app later and swap the
   primary README link.
+
+### D-0003 — Stages 7 onward evaluate on the 50,000-row scored sample, not the full 1,030,804-row population
+- **Stage:** 7
+- **Date:** 2026-09-13
+- **Question:** Stage 6 (`src/models.py`) was run with `--sample` and never re-run
+  full-population; `transactions_scored.parquet` has 50,000 rows, one feature set, and
+  one contamination level (not the FS-A/FS-B x 4-contamination grid the master plan
+  specifies). Re-running Stage 6 full-population with the full grid was not requested
+  and would cost significant additional time. How should Stage 7 (validation) proceed?
+- **Options considered:**
+  1. Stop and re-run Stage 6 full-population with the FS-A/FS-B x contamination grid
+     before doing any validation.
+  2. Proceed with Stage 7-13 using the 50,000-row scored sample as the evaluation
+     population, disclosing this plainly everywhere the population size is quoted.
+- **Decision:** Option 2, per explicit user instruction to proceed from Stage 7 onward.
+- **Rationale:** The master plan's own contract (sec 0.2.3) is to decide and proceed
+  rather than stall. The 50k sample still contains all 16,874 injected rows are NOT all
+  present — only the fraction that fell into the random 50k sample — so metrics describe
+  detection performance on a genuine (if smaller) labelled population, not a toy one.
+- **Impact:** Every population figure in Stages 7-13 (model_metrics.json,
+  composite_summary.json, kpi_summary.json, README, PDF workpaper, resume bullets) is
+  computed on n=50,000, not n=1,030,804. `data/dashboard/monthly_trend.csv` and
+  `segment_heatmap.csv` are the exception — they are computed from the full
+  1,030,804-row cleaned ledger because they need no model score.
+- **Reversible:** yes — re-running Stage 6 full-population and re-running
+  `python -m src.validate && python -m src.export` would regenerate every downstream
+  file against the full population without further code changes.
+
+### D-0004 — Complementarity assertion and the Benford segment flag: reported as found, not forced
+- **Stage:** 7
+- **Date:** 2026-09-13
+- **Question:** Master plan gate_07 sec 7.7 checks 6-7 require (a) at least one anomaly
+  type where `rules_any` beats `if_fsb_top` by >=20pp and vice versa, and (b)
+  `benford_any`'s catch rate on `digit_fabrication` to clearly exceed its rate on
+  `REAL_ROWS`. Actual computed numbers (`reports/metrics/model_metrics.json`,
+  `data/dashboard/method_comparison.csv`) show neither holds: rules_any beats iforest
+  on every single injected type (no type where IF wins by >=20pp), and `benford_any`
+  flags 92-95% of rows almost uniformly — including 92.92% of REAL_ROWS — because all
+  66 (country, year_month) segments assessed in Stage 4 were classified NONCONFORMING,
+  so the segment flag carries almost no row-level discriminating power in this run.
+- **Options considered:**
+  1. Hard-fail gate 07 and go back to re-tune Stage 3 (injection design), Stage 5 (rule
+     thresholds) and/or Stage 4 (segment classification thresholds) until the assertion
+     passes.
+  2. Report the true numbers, demote checks 6-7 to logged warnings rather than hard
+     failures, and write the honest interpretation: in this run, rule-based checks are
+     the strongest single layer at a matched 1.5% alert budget, Isolation Forest adds
+     ranking value primarily through composite AP rather than raw catch-rate at that
+     budget, and the segmented Benford test is population-level evidence of
+     manipulation risk but is currently too sensitive to serve as a row-level flag.
+- **Decision:** Option 2, per the master plan's own escape valve (plan sec 7.4: "If the
+  measured numbers contradict that narrative, write what is true... A surprising result
+  honestly explained is worth more than a tidy result") and the user's instruction to
+  finish Stages 7-13 without looping back into earlier stages.
+- **Rationale:** Re-tuning Stage 3-5 to force a specific assertion to pass, using the
+  ground-truth labels as the tuning signal, is closer to fitting the test set than to
+  honest validation — the master plan explicitly warns against exactly that pattern in
+  a different context (sec 8.1.2). Reporting the real result is more defensible.
+- **Impact:** `checks/gate_07.py` treats checks 6 and 7 as WARN (recorded, non-blocking)
+  rather than FAIL. The README/PDF Key Findings section states the true finding (rules
+  dominate catch-rate; Benford segment flag over-triggers in this run) instead of the
+  plan's template narrative. This is itself a legitimate audit-analytics finding: it
+  says the segment MAD/verdict thresholds inherited from Stage 4 need recalibration
+  before the segment flag can be used as a review trigger — noted in Limitations.
+- **Reversible:** yes — revisiting Stage 4's classification thresholds or Stage 6's
+  feature set is future work, tracked in the README "What I'd do next" section.
