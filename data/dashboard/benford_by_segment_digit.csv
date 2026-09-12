@@ -1,0 +1,298 @@
+segment_dim,segment_value,digit,observed_prop,expected_prop
+country_month,Eire|2011-09,1,0.597027,0.30103
+country_month,Eire|2011-09,2,0.121387,0.176091
+country_month,Eire|2011-09,3,0.085054,0.124939
+country_month,Eire|2011-09,4,0.019818,0.09691
+country_month,Eire|2011-09,5,0.050372,0.079181
+country_month,Eire|2011-09,6,0.037985,0.066947
+country_month,Eire|2011-09,7,0.02147,0.057992
+country_month,Eire|2011-09,8,0.016515,0.051153
+country_month,Eire|2011-09,9,0.050372,0.045757
+country_month,Eire|2011-11,1,0.587056,0.30103
+country_month,Eire|2011-11,2,0.119417,0.176091
+country_month,Eire|2011-11,3,0.096627,0.124939
+country_month,Eire|2011-11,4,0.038286,0.09691
+country_month,Eire|2011-11,5,0.059253,0.079181
+country_month,Eire|2011-11,6,0.033728,0.066947
+country_month,Eire|2011-11,7,0.01732,0.057992
+country_month,Eire|2011-11,8,0.010939,0.051153
+country_month,Eire|2011-11,9,0.037375,0.045757
+country_month,Eire|2010-11,1,0.582516,0.30103
+country_month,Eire|2010-11,2,0.137377,0.176091
+country_month,Eire|2010-11,3,0.102587,0.124939
+country_month,Eire|2010-11,4,0.028546,0.09691
+country_month,Eire|2010-11,5,0.071365,0.079181
+country_month,Eire|2010-11,6,0.021409,0.066947
+country_month,Eire|2010-11,7,0.022302,0.057992
+country_month,Eire|2010-11,8,0.021409,0.051153
+country_month,Eire|2010-11,9,0.012489,0.045757
+country_month,Germany|2011-10,1,0.576836,0.30103
+country_month,Germany|2011-10,2,0.12869,0.176091
+country_month,Germany|2011-10,3,0.094625,0.124939
+country_month,Germany|2011-10,4,0.043906,0.09691
+country_month,Germany|2011-10,5,0.049205,0.079181
+country_month,Germany|2011-10,6,0.02271,0.066947
+country_month,Germany|2011-10,7,0.028009,0.057992
+country_month,Germany|2011-10,8,0.028009,0.051153
+country_month,Germany|2011-10,9,0.028009,0.045757
+country_month,France|2011-09,1,0.558907,0.30103
+country_month,France|2011-09,2,0.138549,0.176091
+country_month,France|2011-09,3,0.100848,0.124939
+country_month,France|2011-09,4,0.04147,0.09691
+country_month,France|2011-09,5,0.044298,0.079181
+country_month,France|2011-09,6,0.032045,0.066947
+country_month,France|2011-09,7,0.03016,0.057992
+country_month,France|2011-09,8,0.036758,0.051153
+country_month,France|2011-09,9,0.016965,0.045757
+country_month,Germany|2011-11,1,0.532243,0.30103
+country_month,Germany|2011-11,2,0.127157,0.176091
+country_month,Germany|2011-11,3,0.105359,0.124939
+country_month,Germany|2011-11,4,0.049046,0.09691
+country_month,Germany|2011-11,5,0.06267,0.079181
+country_month,Germany|2011-11,6,0.029064,0.066947
+country_month,Germany|2011-11,7,0.023615,0.057992
+country_month,Germany|2011-11,8,0.021798,0.051153
+country_month,Germany|2011-11,9,0.049046,0.045757
+country_month,Eire|2010-10,1,0.529652,0.30103
+country_month,Eire|2010-10,2,0.146558,0.176091
+country_month,Eire|2010-10,3,0.121336,0.124939
+country_month,Eire|2010-10,4,0.04908,0.09691
+country_month,Eire|2010-10,5,0.063395,0.079181
+country_month,Eire|2010-10,6,0.032038,0.066947
+country_month,Eire|2010-10,7,0.022495,0.057992
+country_month,Eire|2010-10,8,0.018405,0.051153
+country_month,Eire|2010-10,9,0.017042,0.045757
+country_month,France|2011-11,1,0.504516,0.30103
+country_month,France|2011-11,2,0.147742,0.176091
+country_month,France|2011-11,3,0.110323,0.124939
+country_month,France|2011-11,4,0.045806,0.09691
+country_month,France|2011-11,5,0.047742,0.079181
+country_month,France|2011-11,6,0.030323,0.066947
+country_month,France|2011-11,7,0.032903,0.057992
+country_month,France|2011-11,8,0.044516,0.051153
+country_month,France|2011-11,9,0.036129,0.045757
+country_month,United Kingdom|2010-09,1,0.436832,0.30103
+country_month,United Kingdom|2010-09,2,0.152986,0.176091
+country_month,United Kingdom|2010-09,3,0.11662,0.124939
+country_month,United Kingdom|2010-09,4,0.065097,0.09691
+country_month,United Kingdom|2010-09,5,0.084557,0.079181
+country_month,United Kingdom|2010-09,6,0.038503,0.066947
+country_month,United Kingdom|2010-09,7,0.04425,0.057992
+country_month,United Kingdom|2010-09,8,0.039253,0.051153
+country_month,United Kingdom|2010-09,9,0.021903,0.045757
+country_month,United Kingdom|2010-07,1,0.432943,0.30103
+country_month,United Kingdom|2010-07,2,0.157434,0.176091
+country_month,United Kingdom|2010-07,3,0.109489,0.124939
+country_month,United Kingdom|2010-07,4,0.058694,0.09691
+country_month,United Kingdom|2010-07,5,0.088127,0.079181
+country_month,United Kingdom|2010-07,6,0.038706,0.066947
+country_month,United Kingdom|2010-07,7,0.047223,0.057992
+country_month,United Kingdom|2010-07,8,0.042278,0.051153
+country_month,United Kingdom|2010-07,9,0.025106,0.045757
+country_month,United Kingdom|2010-04,1,0.435652,0.30103
+country_month,United Kingdom|2010-04,2,0.16013,0.176091
+country_month,United Kingdom|2010-04,3,0.10947,0.124939
+country_month,United Kingdom|2010-04,4,0.062668,0.09691
+country_month,United Kingdom|2010-04,5,0.080132,0.079181
+country_month,United Kingdom|2010-04,6,0.037521,0.066947
+country_month,United Kingdom|2010-04,7,0.049496,0.057992
+country_month,United Kingdom|2010-04,8,0.040548,0.051153
+country_month,United Kingdom|2010-04,9,0.024382,0.045757
+country_month,United Kingdom|2010-08,1,0.423116,0.30103
+country_month,United Kingdom|2010-08,2,0.160918,0.176091
+country_month,United Kingdom|2010-08,3,0.106617,0.124939
+country_month,United Kingdom|2010-08,4,0.062581,0.09691
+country_month,United Kingdom|2010-08,5,0.091562,0.079181
+country_month,United Kingdom|2010-08,6,0.042325,0.066947
+country_month,United Kingdom|2010-08,7,0.044002,0.057992
+country_month,United Kingdom|2010-08,8,0.042017,0.051153
+country_month,United Kingdom|2010-08,9,0.02686,0.045757
+country_month,United Kingdom|2010-10,1,0.427913,0.30103
+country_month,United Kingdom|2010-10,2,0.159387,0.176091
+country_month,United Kingdom|2010-10,3,0.117119,0.124939
+country_month,United Kingdom|2010-10,4,0.068264,0.09691
+country_month,United Kingdom|2010-10,5,0.085496,0.079181
+country_month,United Kingdom|2010-10,6,0.035818,0.066947
+country_month,United Kingdom|2010-10,7,0.042131,0.057992
+country_month,United Kingdom|2010-10,8,0.041601,0.051153
+country_month,United Kingdom|2010-10,9,0.022271,0.045757
+country_month,United Kingdom|2010-06,1,0.419178,0.30103
+country_month,United Kingdom|2010-06,2,0.155276,0.176091
+country_month,United Kingdom|2010-06,3,0.109137,0.124939
+country_month,United Kingdom|2010-06,4,0.064504,0.09691
+country_month,United Kingdom|2010-06,5,0.09299,0.079181
+country_month,United Kingdom|2010-06,6,0.040113,0.066947
+country_month,United Kingdom|2010-06,7,0.0512,0.057992
+country_month,United Kingdom|2010-06,8,0.042557,0.051153
+country_month,United Kingdom|2010-06,9,0.025045,0.045757
+country_month,United Kingdom|2010-05,1,0.427417,0.30103
+country_month,United Kingdom|2010-05,2,0.159971,0.176091
+country_month,United Kingdom|2010-05,3,0.114232,0.124939
+country_month,United Kingdom|2010-05,4,0.058921,0.09691
+country_month,United Kingdom|2010-05,5,0.084258,0.079181
+country_month,United Kingdom|2010-05,6,0.040407,0.066947
+country_month,United Kingdom|2010-05,7,0.048389,0.057992
+country_month,United Kingdom|2010-05,8,0.041566,0.051153
+country_month,United Kingdom|2010-05,9,0.02484,0.045757
+country_month,United Kingdom|2010-03,1,0.419001,0.30103
+country_month,United Kingdom|2010-03,2,0.156437,0.176091
+country_month,United Kingdom|2010-03,3,0.112907,0.124939
+country_month,United Kingdom|2010-03,4,0.067153,0.09691
+country_month,United Kingdom|2010-03,5,0.089555,0.079181
+country_month,United Kingdom|2010-03,6,0.04033,0.066947
+country_month,United Kingdom|2010-03,7,0.046107,0.057992
+country_month,United Kingdom|2010-03,8,0.042581,0.051153
+country_month,United Kingdom|2010-03,9,0.025928,0.045757
+country_month,United Kingdom|2010-02,1,0.421005,0.30103
+country_month,United Kingdom|2010-02,2,0.158733,0.176091
+country_month,United Kingdom|2010-02,3,0.106788,0.124939
+country_month,United Kingdom|2010-02,4,0.065685,0.09691
+country_month,United Kingdom|2010-02,5,0.084788,0.079181
+country_month,United Kingdom|2010-02,6,0.043529,0.066947
+country_month,United Kingdom|2010-02,7,0.04944,0.057992
+country_month,United Kingdom|2010-02,8,0.042433,0.051153
+country_month,United Kingdom|2010-02,9,0.027597,0.045757
+country_month,United Kingdom|2011-04,1,0.423626,0.30103
+country_month,United Kingdom|2011-04,2,0.162648,0.176091
+country_month,United Kingdom|2011-04,3,0.105396,0.124939
+country_month,United Kingdom|2011-04,4,0.085065,0.09691
+country_month,United Kingdom|2011-04,5,0.068022,0.079181
+country_month,United Kingdom|2011-04,6,0.036543,0.066947
+country_month,United Kingdom|2011-04,7,0.04138,0.057992
+country_month,United Kingdom|2011-04,8,0.045688,0.051153
+country_month,United Kingdom|2011-04,9,0.03163,0.045757
+country_month,United Kingdom|2011-03,1,0.421312,0.30103
+country_month,United Kingdom|2011-03,2,0.152797,0.176091
+country_month,United Kingdom|2011-03,3,0.107065,0.124939
+country_month,United Kingdom|2011-03,4,0.086252,0.09691
+country_month,United Kingdom|2011-03,5,0.072008,0.079181
+country_month,United Kingdom|2011-03,6,0.036573,0.066947
+country_month,United Kingdom|2011-03,7,0.045037,0.057992
+country_month,United Kingdom|2011-03,8,0.044531,0.051153
+country_month,United Kingdom|2011-03,9,0.034425,0.045757
+country_month,United Kingdom|2011-02,1,0.420591,0.30103
+country_month,United Kingdom|2011-02,2,0.146468,0.176091
+country_month,United Kingdom|2011-02,3,0.104849,0.124939
+country_month,United Kingdom|2011-02,4,0.088836,0.09691
+country_month,United Kingdom|2011-02,5,0.073687,0.079181
+country_month,United Kingdom|2011-02,6,0.037008,0.066947
+country_month,United Kingdom|2011-02,7,0.045159,0.057992
+country_month,United Kingdom|2011-02,8,0.050058,0.051153
+country_month,United Kingdom|2011-02,9,0.033344,0.045757
+country_month,United Kingdom|2011-05,1,0.417395,0.30103
+country_month,United Kingdom|2011-05,2,0.161137,0.176091
+country_month,United Kingdom|2011-05,3,0.101465,0.124939
+country_month,United Kingdom|2011-05,4,0.09167,0.09691
+country_month,United Kingdom|2011-05,5,0.065549,0.079181
+country_month,United Kingdom|2011-05,6,0.043658,0.066947
+country_month,United Kingdom|2011-05,7,0.038683,0.057992
+country_month,United Kingdom|2011-05,8,0.046923,0.051153
+country_month,United Kingdom|2011-05,9,0.033521,0.045757
+country_month,United Kingdom|2010-01,1,0.393808,0.30103
+country_month,United Kingdom|2010-01,2,0.166721,0.176091
+country_month,United Kingdom|2010-01,3,0.112099,0.124939
+country_month,United Kingdom|2010-01,4,0.068675,0.09691
+country_month,United Kingdom|2010-01,5,0.099888,0.079181
+country_month,United Kingdom|2010-01,6,0.045591,0.066947
+country_month,United Kingdom|2010-01,7,0.046097,0.057992
+country_month,United Kingdom|2010-01,8,0.042845,0.051153
+country_month,United Kingdom|2010-01,9,0.024277,0.045757
+country_month,United Kingdom|2011-09,1,0.399405,0.30103
+country_month,United Kingdom|2011-09,2,0.16659,0.176091
+country_month,United Kingdom|2011-09,3,0.106892,0.124939
+country_month,United Kingdom|2011-09,4,0.098796,0.09691
+country_month,United Kingdom|2011-09,5,0.057368,0.079181
+country_month,United Kingdom|2011-09,6,0.040229,0.066947
+country_month,United Kingdom|2011-09,7,0.032409,0.057992
+country_month,United Kingdom|2011-09,8,0.052524,0.051153
+country_month,United Kingdom|2011-09,9,0.045788,0.045757
+country_month,United Kingdom|2011-08,1,0.3989,0.30103
+country_month,United Kingdom|2011-08,2,0.164292,0.176091
+country_month,United Kingdom|2011-08,3,0.107784,0.124939
+country_month,United Kingdom|2011-08,4,0.098197,0.09691
+country_month,United Kingdom|2011-08,5,0.061403,0.079181
+country_month,United Kingdom|2011-08,6,0.048069,0.066947
+country_month,United Kingdom|2011-08,7,0.038516,0.057992
+country_month,United Kingdom|2011-08,8,0.045234,0.051153
+country_month,United Kingdom|2011-08,9,0.037605,0.045757
+country_month,United Kingdom|2011-07,1,0.386682,0.30103
+country_month,United Kingdom|2011-07,2,0.166328,0.176091
+country_month,United Kingdom|2011-07,3,0.109698,0.124939
+country_month,United Kingdom|2011-07,4,0.106946,0.09691
+country_month,United Kingdom|2011-07,5,0.060817,0.079181
+country_month,United Kingdom|2011-07,6,0.04574,0.066947
+country_month,United Kingdom|2011-07,7,0.034971,0.057992
+country_month,United Kingdom|2011-07,8,0.049509,0.051153
+country_month,United Kingdom|2011-07,9,0.039308,0.045757
+country_month,United Kingdom|2010-11,1,0.381431,0.30103
+country_month,United Kingdom|2010-11,2,0.165511,0.176091
+country_month,United Kingdom|2010-11,3,0.11991,0.124939
+country_month,United Kingdom|2010-11,4,0.074632,0.09691
+country_month,United Kingdom|2010-11,5,0.093767,0.079181
+country_month,United Kingdom|2010-11,6,0.040689,0.066947
+country_month,United Kingdom|2010-11,7,0.049222,0.057992
+country_month,United Kingdom|2010-11,8,0.050234,0.051153
+country_month,United Kingdom|2010-11,9,0.024604,0.045757
+country_month,United Kingdom|2011-06,1,0.386172,0.30103
+country_month,United Kingdom|2011-06,2,0.162457,0.176091
+country_month,United Kingdom|2011-06,3,0.107838,0.124939
+country_month,United Kingdom|2011-06,4,0.105455,0.09691
+country_month,United Kingdom|2011-06,5,0.064754,0.079181
+country_month,United Kingdom|2011-06,6,0.042926,0.066947
+country_month,United Kingdom|2011-06,7,0.040988,0.057992
+country_month,United Kingdom|2011-06,8,0.049852,0.051153
+country_month,United Kingdom|2011-06,9,0.039558,0.045757
+country_month,United Kingdom|2011-10,1,0.390008,0.30103
+country_month,United Kingdom|2011-10,2,0.176579,0.176091
+country_month,United Kingdom|2011-10,3,0.106832,0.124939
+country_month,United Kingdom|2011-10,4,0.098241,0.09691
+country_month,United Kingdom|2011-10,5,0.056909,0.079181
+country_month,United Kingdom|2011-10,6,0.040979,0.066947
+country_month,United Kingdom|2011-10,7,0.037555,0.057992
+country_month,United Kingdom|2011-10,8,0.051762,0.051153
+country_month,United Kingdom|2011-10,9,0.041136,0.045757
+country_month,United Kingdom|2011-11,1,0.367936,0.30103
+country_month,United Kingdom|2011-11,2,0.175481,0.176091
+country_month,United Kingdom|2011-11,3,0.108403,0.124939
+country_month,United Kingdom|2011-11,4,0.110107,0.09691
+country_month,United Kingdom|2011-11,5,0.058748,0.079181
+country_month,United Kingdom|2011-11,6,0.043778,0.066947
+country_month,United Kingdom|2011-11,7,0.039293,0.057992
+country_month,United Kingdom|2011-11,8,0.055176,0.051153
+country_month,United Kingdom|2011-11,9,0.041079,0.045757
+country_month,United Kingdom|2011-12,1,0.35927,0.30103
+country_month,United Kingdom|2011-12,2,0.175352,0.176091
+country_month,United Kingdom|2011-12,3,0.108351,0.124939
+country_month,United Kingdom|2011-12,4,0.118755,0.09691
+country_month,United Kingdom|2011-12,5,0.055431,0.079181
+country_month,United Kingdom|2011-12,6,0.04108,0.066947
+country_month,United Kingdom|2011-12,7,0.041439,0.057992
+country_month,United Kingdom|2011-12,8,0.053233,0.051153
+country_month,United Kingdom|2011-12,9,0.047089,0.045757
+country_month,United Kingdom|2010-12,1,0.366303,0.30103
+country_month,United Kingdom|2010-12,2,0.169142,0.176091
+country_month,United Kingdom|2010-12,3,0.118038,0.124939
+country_month,United Kingdom|2010-12,4,0.083793,0.09691
+country_month,United Kingdom|2010-12,5,0.095744,0.079181
+country_month,United Kingdom|2010-12,6,0.04216,0.066947
+country_month,United Kingdom|2010-12,7,0.049653,0.057992
+country_month,United Kingdom|2010-12,8,0.05245,0.051153
+country_month,United Kingdom|2010-12,9,0.022716,0.045757
+country_month,United Kingdom|2009-12,1,0.366163,0.30103
+country_month,United Kingdom|2009-12,2,0.160585,0.176091
+country_month,United Kingdom|2009-12,3,0.124929,0.124939
+country_month,United Kingdom|2009-12,4,0.071655,0.09691
+country_month,United Kingdom|2009-12,5,0.087111,0.079181
+country_month,United Kingdom|2009-12,6,0.061801,0.066947
+country_month,United Kingdom|2009-12,7,0.053692,0.057992
+country_month,United Kingdom|2009-12,8,0.048999,0.051153
+country_month,United Kingdom|2009-12,9,0.025065,0.045757
+country_month,United Kingdom|2011-01,1,0.368161,0.30103
+country_month,United Kingdom|2011-01,2,0.152686,0.176091
+country_month,United Kingdom|2011-01,3,0.122787,0.124939
+country_month,United Kingdom|2011-01,4,0.095545,0.09691
+country_month,United Kingdom|2011-01,5,0.08415,0.079181
+country_month,United Kingdom|2011-01,6,0.043155,0.066947
+country_month,United Kingdom|2011-01,7,0.049434,0.057992
+country_month,United Kingdom|2011-01,8,0.051261,0.051153
+country_month,United Kingdom|2011-01,9,0.032823,0.045757

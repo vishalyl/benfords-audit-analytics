@@ -1,0 +1,34 @@
+segment_dim,segment_value,n,mad,verdict,chi2,chi2_p,max_dev_digit,is_flagged
+country_month,Eire|2011-09,1211,0.066803,NONCONFORMING,1209.0,0.0,1,True
+country_month,Eire|2011-11,1097,0.063561,NONCONFORMING,1095.0,0.0,1,True
+country_month,Eire|2010-11,1121,0.062552,NONCONFORMING,1119.0,0.0,1,True
+country_month,Germany|2011-10,1321,0.06129,NONCONFORMING,1319.0,0.0,1,True
+country_month,France|2011-09,1061,0.057306,NONCONFORMING,1059.0,0.0,1,True
+country_month,Germany|2011-11,1101,0.052112,NONCONFORMING,1099.0,0.0,1,True
+country_month,Eire|2010-10,1467,0.050805,NONCONFORMING,1465.0,0.0,1,True
+country_month,France|2011-11,1550,0.045219,NONCONFORMING,1548.0,0.0,1,True
+country_month,United Kingdom|2010-09,36023,0.031373,NONCONFORMING,36021.0,0.0,1,True
+country_month,United Kingdom|2010-07,29117,0.031302,NONCONFORMING,29115.0,0.0,1,True
+country_month,United Kingdom|2010-04,30063,0.030127,NONCONFORMING,30061.0,0.0,1,True
+country_month,United Kingdom|2010-08,29226,0.029882,NONCONFORMING,29224.0,0.0,1,True
+country_month,United Kingdom|2010-10,51008,0.0296,NONCONFORMING,51006.0,0.0,1,True
+country_month,United Kingdom|2010-06,35176,0.029324,NONCONFORMING,35174.0,0.0,1,True
+country_month,United Kingdom|2010-05,30193,0.029214,NONCONFORMING,30191.0,0.0,1,True
+country_month,United Kingdom|2010-03,36871,0.028521,NONCONFORMING,36869.0,0.0,1,True
+country_month,United Kingdom|2010-02,25546,0.027907,NONCONFORMING,25544.0,0.0,1,True
+country_month,United Kingdom|2011-04,26462,0.027244,NONCONFORMING,26460.0,0.0,1,True
+country_month,United Kingdom|2011-03,31663,0.026729,NONCONFORMING,31661.0,0.0,1,True
+country_month,United Kingdom|2011-02,24292,0.026569,NONCONFORMING,24290.0,0.0,1,True
+country_month,United Kingdom|2011-05,32159,0.025859,NONCONFORMING,32157.0,0.0,1,True
+country_month,United Kingdom|2010-01,27681,0.025219,NONCONFORMING,27679.0,0.0,1,True
+country_month,United Kingdom|2011-09,43352,0.022592,NONCONFORMING,43350.0,0.0,1,True
+country_month,United Kingdom|2011-08,29624,0.022035,NONCONFORMING,29622.0,0.0,1,True
+country_month,United Kingdom|2011-07,33428,0.021264,NONCONFORMING,33426.0,0.0,1,True
+country_month,United Kingdom|2010-11,68201,0.021108,NONCONFORMING,68199.0,0.0,1,True
+country_month,United Kingdom|2011-06,31473,0.020819,NONCONFORMING,31471.0,0.0,1,True
+country_month,United Kingdom|2011-10,51099,0.020312,NONCONFORMING,51097.0,0.0,1,True
+country_month,United Kingdom|2011-11,73347,0.018695,NONCONFORMING,73345.0,0.0,1,True
+country_month,United Kingdom|2011-12,22298,0.018555,NONCONFORMING,22296.0,0.0,1,True
+country_month,United Kingdom|2010-12,37903,0.018474,NONCONFORMING,37901.0,0.0,1,True
+country_month,United Kingdom|2009-12,40695,0.016236,NONCONFORMING,40693.0,0.0,1,True
+country_month,United Kingdom|2011-01,30101,0.016046,NONCONFORMING,30099.0,0.0,1,True

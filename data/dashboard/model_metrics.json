@@ -1,0 +1,345 @@
+{
+  "population": {
+    "n_total": 50000,
+    "n_injected": 802,
+    "anomaly_rate": 0.01604
+  },
+  "baseline_precision": 0.01604,
+  "models": {
+    "benford_any": {
+      "precision": 0.016014,
+      "recall": 0.927681,
+      "f1": 0.031485,
+      "tp": 744,
+      "fp": 45714,
+      "tn": 3484,
+      "fn": 58,
+      "specificity": 0.070816,
+      "fpr": 0.929184,
+      "alerts": 46458,
+      "alert_rate": 0.92916
+    },
+    "rules_any": {
+      "precision": 0.054592,
+      "recall": 0.639651,
+      "f1": 0.100598,
+      "tp": 513,
+      "fp": 8884,
+      "tn": 40314,
+      "fn": 289,
+      "specificity": 0.819424,
+      "fpr": 0.180576,
+      "alerts": 9397,
+      "alert_rate": 0.18794
+    },
+    "iforest": {
+      "average_precision": 0.13605,
+      "roc_auc": 0.713953,
+      "baseline_precision": 0.01604,
+      "n_positive": 802,
+      "n_total": 50000,
+      "precision_at_k": {
+        "50": 0.06,
+        "100": 0.14,
+        "250": 0.28,
+        "500": 0.334,
+        "1000": 0.273,
+        "5000": 0.0816
+      },
+      "recall_at_k": {
+        "50": 0.003741,
+        "100": 0.017456,
+        "250": 0.087282,
+        "500": 0.208229,
+        "1000": 0.340399,
+        "5000": 0.508728
+      },
+      "lift_at_k": {
+        "50": 3.7406,
+        "100": 8.7282,
+        "250": 17.4564,
+        "500": 20.8229,
+        "1000": 17.02,
+        "5000": 5.0873
+      },
+      "ap_ci95": [
+        0.119139,
+        0.157046
+      ],
+      "threshold_used": 0.605697,
+      "threshold_criterion": "contamination_0.015",
+      "precision": 0.316,
+      "recall": 0.295511,
+      "f1": 0.305412,
+      "confusion": {
+        "tp": 237,
+        "fp": 513,
+        "tn": 48685,
+        "fn": 565
+      }
+    },
+    "lof": {
+      "average_precision": 0.083485,
+      "roc_auc": 0.629603,
+      "baseline_precision": 0.01604,
+      "n_positive": 802,
+      "n_total": 50000,
+      "precision_at_k": {
+        "50": 0.42,
+        "100": 0.35,
+        "250": 0.272,
+        "500": 0.192,
+        "1000": 0.125,
+        "5000": 0.0534
+      },
+      "recall_at_k": {
+        "50": 0.026185,
+        "100": 0.043641,
+        "250": 0.084788,
+        "500": 0.119701,
+        "1000": 0.15586,
+        "5000": 0.332918
+      },
+      "lift_at_k": {
+        "50": 26.1845,
+        "100": 21.8204,
+        "250": 16.9576,
+        "500": 11.9701,
+        "1000": 7.793,
+        "5000": 3.3292
+      },
+      "ap_ci95": [
+        0.066027,
+        0.103894
+      ],
+      "threshold_used": 0.009698,
+      "threshold_criterion": "contamination_0.015",
+      "precision": 0.150667,
+      "recall": 0.140898,
+      "f1": 0.145619,
+      "confusion": {
+        "tp": 113,
+        "fp": 637,
+        "tn": 48561,
+        "fn": 689
+      }
+    },
+    "composite": {
+      "average_precision": 0.181662,
+      "roc_auc": 0.733958,
+      "baseline_precision": 0.01604,
+      "n_positive": 802,
+      "n_total": 50000,
+      "precision_at_k": {
+        "50": 0.58,
+        "100": 0.54,
+        "250": 0.48,
+        "500": 0.402,
+        "1000": 0.231,
+        "5000": 0.0784
+      },
+      "recall_at_k": {
+        "50": 0.03616,
+        "100": 0.067332,
+        "250": 0.149626,
+        "500": 0.250623,
+        "1000": 0.28803,
+        "5000": 0.488778
+      },
+      "lift_at_k": {
+        "50": 36.1596,
+        "100": 33.6658,
+        "250": 29.9252,
+        "500": 25.0623,
+        "1000": 14.4015,
+        "5000": 4.8878
+      },
+      "ap_ci95": [
+        0.160061,
+        0.210854
+      ],
+      "threshold_used": 0.79645,
+      "threshold_criterion": "contamination_0.015",
+      "precision": 0.305333,
+      "recall": 0.285536,
+      "f1": 0.295103,
+      "confusion": {
+        "tp": 229,
+        "fp": 521,
+        "tn": 48677,
+        "fn": 573
+      }
+    }
+  },
+  "per_type": {
+    "digit_fabrication": {
+      "benford_any": {
+        "n": 111,
+        "pct_caught": 89.19
+      },
+      "rules_any": {
+        "n": 111,
+        "pct_caught": 46.85
+      },
+      "iforest": {
+        "n": 111,
+        "pct_caught": 0.9
+      },
+      "lof": {
+        "n": 111,
+        "pct_caught": 17.12
+      },
+      "composite": {
+        "n": 111,
+        "pct_caught": 0.0
+      }
+    },
+    "duplicate": {
+      "benford_any": {
+        "n": 149,
+        "pct_caught": 92.62
+      },
+      "rules_any": {
+        "n": 149,
+        "pct_caught": 27.52
+      },
+      "iforest": {
+        "n": 149,
+        "pct_caught": 2.68
+      },
+      "lof": {
+        "n": 149,
+        "pct_caught": 4.03
+      },
+      "composite": {
+        "n": 149,
+        "pct_caught": 3.36
+      }
+    },
+    "extreme_outlier": {
+      "benford_any": {
+        "n": 127,
+        "pct_caught": 93.7
+      },
+      "rules_any": {
+        "n": 127,
+        "pct_caught": 86.61
+      },
+      "iforest": {
+        "n": 127,
+        "pct_caught": 33.86
+      },
+      "lof": {
+        "n": 127,
+        "pct_caught": 31.5
+      },
+      "composite": {
+        "n": 127,
+        "pct_caught": 38.58
+      }
+    },
+    "round_number": {
+      "benford_any": {
+        "n": 127,
+        "pct_caught": 95.28
+      },
+      "rules_any": {
+        "n": 127,
+        "pct_caught": 100.0
+      },
+      "iforest": {
+        "n": 127,
+        "pct_caught": 71.65
+      },
+      "lof": {
+        "n": 127,
+        "pct_caught": 13.39
+      },
+      "composite": {
+        "n": 127,
+        "pct_caught": 70.08
+      }
+    },
+    "threshold_avoidance": {
+      "benford_any": {
+        "n": 159,
+        "pct_caught": 93.08
+      },
+      "rules_any": {
+        "n": 159,
+        "pct_caught": 100.0
+      },
+      "iforest": {
+        "n": 159,
+        "pct_caught": 61.01
+      },
+      "lof": {
+        "n": 159,
+        "pct_caught": 18.87
+      },
+      "composite": {
+        "n": 159,
+        "pct_caught": 53.46
+      }
+    },
+    "timing": {
+      "benford_any": {
+        "n": 129,
+        "pct_caught": 92.25
+      },
+      "rules_any": {
+        "n": 129,
+        "pct_caught": 18.6
+      },
+      "iforest": {
+        "n": 129,
+        "pct_caught": 0.78
+      },
+      "lof": {
+        "n": 129,
+        "pct_caught": 0.78
+      },
+      "composite": {
+        "n": 129,
+        "pct_caught": 0.78
+      }
+    }
+  },
+  "threshold_sweep": {
+    "optimal_threshold": 0.809907,
+    "criterion": "f1",
+    "metrics_at_optimal": {
+      "precision": 0.385813,
+      "recall": 0.278055,
+      "f1": 0.323188,
+      "tp": 223,
+      "fp": 355,
+      "tn": 48843,
+      "fn": 579,
+      "specificity": 0.992784,
+      "fpr": 0.007216,
+      "alerts": 578,
+      "alert_rate": 0.01156
+    }
+  },
+  "complementarity_check": {
+    "gaps_pct_points": [
+      [
+        "rules_any_beats_iforest",
+        "extreme_outlier",
+        52.75
+      ],
+      [
+        "iforest_beats_rules_any",
+        "timing",
+        -17.82
+      ]
+    ],
+    "passes": false
+  },
+  "caveats": [
+    "Positives are injected rows only; genuine anomalies already present in the real ledger are scored as false positives when flagged, so every precision figure reported here is a lower bound, not an exact rate.",
+    "The Isolation Forest decision threshold was calibrated to the known injection rate (contamination=0.015); in a real engagement the true anomaly rate is unknown and this threshold would have to be set by judgement or a fixed review-alert budget instead.",
+    "Isolation Forest and LOF were fit on a 50,000-row sample of the 1,030,804-row cleaned population (Stage 6 ran in --sample mode); figures in this file describe detection performance on that sample, not the full ledger."
+  ]
+}

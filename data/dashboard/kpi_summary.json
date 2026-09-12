@@ -1,0 +1,23 @@
+{
+  "total_txns": 1013930,
+  "total_value": 37645677.86,
+  "date_range": [
+    "2009-11-27 07:45:00",
+    "2011-12-31 17:43:00"
+  ],
+  "aggregate_mad": 0.025094,
+  "aggregate_verdict": "NONCONFORMING",
+  "n_segments_assessed": 66,
+  "n_segments_flagged": 66,
+  "n_injected": 16874,
+  "anomaly_rate": 0.01637,
+  "scored_population": 50000,
+  "pct_high_critical": 20.31,
+  "headline_average_precision": 0.181662,
+  "headline_ap_ci95": [
+    0.160061,
+    0.210854
+  ],
+  "headline_recall_at_500": 0.250623,
+  "headline_precision_at_500": 0.402
+}
