@@ -1,0 +1,37 @@
+{
+  "feature_columns": [
+    "amount",
+    "quantity",
+    "price",
+    "hour",
+    "day_of_week",
+    "cust_txn_count",
+    "cust_amount_mean",
+    "cust_amount_std"
+  ],
+  "n_feature_columns": 8,
+  "total_rows": 50000,
+  "rows_with_nan": 11485,
+  "n_flagged_rows": 9397,
+  "risk_score_mean": 0.058898,
+  "risk_score_std": 0.078158,
+  "risk_score_min": 0.0,
+  "risk_score_max": 0.740613,
+  "if_score_mean": 0.109132,
+  "lof_score_mean": 0.002005,
+  "risk_tiers": {
+    "LOW": 46858,
+    "MEDIUM": 3051,
+    "HIGH": 91
+  },
+  "auc_roc": 0.784664,
+  "parameters": {
+    "n_estimators": 200,
+    "max_samples": 256,
+    "lof_n_neighbors": 20,
+    "lof_subsample_n": 150000,
+    "if_weight": 0.4,
+    "lof_weight": 0.3,
+    "flag_weight": 0.3
+  }
+}

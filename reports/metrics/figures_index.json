@@ -18,5 +18,25 @@
   "cleaning_waterfall.png": {
     "path": "reports/figures/cleaning_waterfall.png",
     "category": "cleaning"
+  },
+  "rule_distribution.png": {
+    "path": "reports/figures/rule_distribution.png",
+    "category": "rules"
+  },
+  "rule_time_series.png": {
+    "path": "reports/figures/rule_time_series.png",
+    "category": "rules"
+  },
+  "model_score_distribution.png": {
+    "path": "reports/figures/model_score_distribution.png",
+    "category": "models"
+  },
+  "model_risk_by_anomaly.png": {
+    "path": "reports/figures/model_risk_by_anomaly.png",
+    "category": "models"
+  },
+  "model_feature_importance.png": {
+    "path": "reports/figures/model_feature_importance.png",
+    "category": "models"
   }
 }

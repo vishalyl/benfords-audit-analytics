@@ -4,12 +4,12 @@
   "n_total": 1030804,
   "anomaly_rate": 0.01637,
   "volume_plan": {
-    "threshold_avoidance": 3671,
-    "duplicate": 3067,
-    "timing": 2534,
+    "duplicate": 2539,
+    "threshold_avoidance": 2534,
+    "round_number": 2534,
     "digit_fabrication": 2534,
-    "extreme_outlier": 2534,
-    "round_number": 2534
+    "timing": 2534,
+    "extreme_outlier": 2534
   },
   "type_counts": {
     "threshold_avoidance": 3671,
@@ -20,12 +20,6 @@
     "round_number": 2534
   },
   "seed": 42,
-  "anti_tell_checks": {
-    "T3": true,
-    "T6": false,
-    "T7": true,
-    "T8": true
-  },
   "contamination_matrix": {
     "duplicate": {
       "benford": "none",
@@ -57,6 +51,21 @@
       "rules": "near-zero",
       "iforest": "very-high"
     }
+  },
+  "anti_tell_checks": {
+    "T3_amount_consistent": true,
+    "T3_mismatches": 0,
+    "T4_dp_ok": false,
+    "T6_invoices_unique": false,
+    "T7_no_novel_codes": true,
+    "T7_no_novel_countries": true,
+    "T8_date_coverage": 1.0,
+    "T8_injected_customers": 3403,
+    "T8_pass": true,
+    "T9_best_single_feature_auc": 0.7796,
+    "T9_pass": true,
+    "T10_dt_ap": 0.4681,
+    "T10_pass": true
   },
   "output_hash": "cc0ad79b99e19483"
 }

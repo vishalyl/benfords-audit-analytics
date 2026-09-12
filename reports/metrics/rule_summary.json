@@ -1,0 +1,24 @@
+{
+  "total_rows": 1030804,
+  "n_flagged": 194792,
+  "n_clean": 836012,
+  "flagged_pct": 18.9,
+  "rule_counts": {
+    "ROUND_NUMBER": 113491,
+    "NEGATIVE_ADJUSTMENT": 5,
+    "LARGE_AMOUNT": 10300,
+    "ZERO_QUANTITY": 0,
+    "ODD_QUANTITY": 0,
+    "DUPLICATE_INVOICE": 22443,
+    "ROUND_DOLLARS": 28106,
+    "HIGH_QUANTITY": 9979,
+    "OFF_HOUR": 0,
+    "SPLIT_AMOUNT": 68925
+  },
+  "overlap_stats": {
+    "exactly_1": 145829,
+    "exactly_2": 40413,
+    "exactly_3": 7662,
+    "4_or_more": 888
+  }
+}
