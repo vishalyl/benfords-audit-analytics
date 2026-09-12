@@ -1,0 +1,22 @@
+{
+  "hour_distribution.png": {
+    "path": "reports/figures/hour_distribution.png",
+    "category": "cleaning"
+  },
+  "dow_distribution.png": {
+    "path": "reports/figures/dow_distribution.png",
+    "category": "cleaning"
+  },
+  "amount_distribution.png": {
+    "path": "reports/figures/amount_distribution.png",
+    "category": "cleaning"
+  },
+  "monthly_volume.png": {
+    "path": "reports/figures/monthly_volume.png",
+    "category": "cleaning"
+  },
+  "cleaning_waterfall.png": {
+    "path": "reports/figures/cleaning_waterfall.png",
+    "category": "cleaning"
+  }
+}

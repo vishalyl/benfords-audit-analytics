@@ -1,0 +1,102 @@
+project:
+  name: benfords-audit-analytics
+  seed: 42
+  currency: GBP
+
+paths:
+  raw_dir: data/raw
+  interim_dir: data/interim
+  processed_dir: data/processed
+  dashboard_dir: data/dashboard
+  db_path: db/audit_data.db
+  figures_dir: reports/figures
+  metrics_dir: reports/metrics
+
+ingest:
+  source_url: "https://archive.ics.uci.edu/static/public/502/online+retail+ii.zip"
+  excel_filename: online_retail_II.xlsx
+  sheets: ["Year 2009-2010", "Year 2010-2011"]
+  expected_rows_total: 1067371
+  rowcount_tolerance_pct: 1.0
+  sample_size: 50000
+
+cleaning:
+  drop_missing_customer: false
+  unassigned_customer_label: "UNASSIGNED"
+  cancellation_prefix: "C"
+  nonproduct_stock_codes: ["POST","DOT","D","M","C2","BANK CHARGES","CRUK",
+                           "PADS","S","AMAZONFEE","TEST001","TEST002",
+                           "ADJUST","ADJUST2","B"]
+  nonproduct_regex: "^[A-Za-z]+$"
+  min_benford_amount: 1.00
+  month_end_days: 2
+
+injection:
+  rate: 0.015
+  types: [duplicate, threshold_avoidance, round_number,
+          digit_fabrication, timing, extreme_outlier]
+  duplicate:
+    date_jitter_days: 1
+  threshold_avoidance:
+    thresholds: [1000, 5000, 10000, 500, 250]
+    band_fraction: 0.02          # amount lands within 2% below the threshold
+  round_number:
+    values: [1000, 5000, 10000, 2000, 500]
+  digit_fabrication:
+    leading_digit_weights: {1: 0.05, 2: 0.05, 3: 0.05, 4: 0.05, 5: 0.05,
+                            6: 0.05, 7: 0.10, 8: 0.20, 9: 0.40}
+  timing:
+    period_end_days: 2
+    off_hours_range: [0, 5]      # inject some at 00:00-05:59
+    period_end_share: 0.6
+  extreme_outlier:
+    multiplier_range: [10, 50]
+
+benford:
+  digits: [1,2,3,4,5,6,7,8,9]
+  min_segment_n: 1000
+  mad_thresholds_first:
+    close: 0.006
+    acceptable: 0.012
+    marginal: 0.015
+  mad_thresholds_second:
+    close: 0.008
+    acceptable: 0.010
+    marginal: 0.012
+  mad_thresholds_first_two:
+    close: 0.0012
+    acceptable: 0.0018
+    marginal: 0.0022
+  chi2_alpha: 0.05
+  segment_dimensions: [country, year_month]
+  run_second_digit: true
+  run_first_two_digits: true
+  run_extra_tests: true
+
+rules:
+  duplicate_window_days: 1
+  round_multiples: [100, 1000]
+  threshold_bands: [[950, 999.99], [4750, 4999.99], [9500, 9999.99],
+                    [475, 499.99], [237.5, 249.99]]
+  period_end_days: 2
+  business_hours: [7, 19]
+
+model:
+  contamination_primary: 0.015
+  contamination_sensitivity: [0.005, 0.010, 0.030]
+  n_estimators: 200
+  max_samples: 256
+  n_jobs: -1
+  run_lof: true
+  lof_n_neighbors: 20
+  lof_subsample_n: 150000
+
+composite:
+  weight_if: 0.50
+  weight_rules: 0.30
+  weight_benford: 0.20
+  top_n_export: 50
+
+validation:
+  precision_at_k: [50, 100, 250, 500, 1000, 5000]
+  primary_metric: average_precision

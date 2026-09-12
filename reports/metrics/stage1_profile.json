@@ -1,0 +1,130 @@
+{
+  "n_rows": 1067371,
+  "n_cols": 11,
+  "columns": {
+    "invoice": {
+      "dtype": "string",
+      "n_null": 0,
+      "pct_null": 0.0,
+      "n_unique": 53628
+    },
+    "stock_code": {
+      "dtype": "string",
+      "n_null": 0,
+      "pct_null": 0.0,
+      "n_unique": 5305
+    },
+    "description": {
+      "dtype": "string",
+      "n_null": 4382,
+      "pct_null": 0.4105,
+      "n_unique": 5698
+    },
+    "quantity": {
+      "dtype": "int32",
+      "n_null": 0,
+      "pct_null": 0.0,
+      "n_unique": 1057,
+      "min": -80995.0,
+      "max": 80995.0
+    },
+    "invoice_date": {
+      "dtype": "datetime64[ns]",
+      "n_null": 0,
+      "pct_null": 0.0,
+      "n_unique": 47635,
+      "min": "2009-12-01 07:45:00",
+      "max": "2011-12-09 12:50:00"
+    },
+    "price": {
+      "dtype": "float32",
+      "n_null": 0,
+      "pct_null": 0.0,
+      "n_unique": 2807,
+      "min": -53594.359375,
+      "max": 38970.0
+    },
+    "customer_id": {
+      "dtype": "Float64",
+      "n_null": 243007,
+      "pct_null": 22.7669,
+      "n_unique": 5942,
+      "min": 12346.0,
+      "max": 18287.0
+    },
+    "country": {
+      "dtype": "string",
+      "n_null": 0,
+      "pct_null": 0.0,
+      "n_unique": 43
+    },
+    "source_sheet": {
+      "dtype": "string",
+      "n_null": 0,
+      "pct_null": 0.0,
+      "n_unique": 2
+    },
+    "line_no": {
+      "dtype": "int64",
+      "n_null": 0,
+      "pct_null": 0.0,
+      "n_unique": 1067371,
+      "min": 0.0,
+      "max": 1067370.0
+    },
+    "amount": {
+      "dtype": "float64",
+      "n_null": 0,
+      "pct_null": 0.0,
+      "n_unique": 10344,
+      "min": -168469.5938205719,
+      "max": 168469.5938205719
+    }
+  },
+  "top_10_countries": {
+    "United Kingdom": 981330,
+    "EIRE": 17866,
+    "Germany": 17624,
+    "France": 14330,
+    "Netherlands": 5140,
+    "Spain": 3811,
+    "Switzerland": 3189,
+    "Belgium": 3123,
+    "Portugal": 2620,
+    "Australia": 1913
+  },
+  "n_invoices": 53628,
+  "n_customers": 5942,
+  "n_stock_codes": 5305,
+  "pct_rows_with_C_prefix_invoice": 1.8264,
+  "pct_rows_negative_quantity": 2.1501,
+  "pct_rows_nonpositive_price": 0.5815,
+  "date_min": "2009-12-01 07:45:00",
+  "date_max": "2011-12-09 12:50:00",
+  "hour_histogram": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    41,
+    1127,
+    15985,
+    68324,
+    93248,
+    121780,
+    159846,
+    150308,
+    141513,
+    135309,
+    94055,
+    57549,
+    16991,
+    9089,
+    2205,
+    1,
+    0,
+    0
+  ]
+}

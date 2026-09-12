@@ -1,0 +1,17 @@
+{
+  "rows_in": 1067371,
+  "rows_out": 1013930,
+  "cancellations": 19494,
+  "exact_duplicates": 33947,
+  "missing_customer": 243007,
+  "adjustments": 4580,
+  "nonpositive_amount": 6037,
+  "reconciles": true,
+  "pct_outside_business_hours_07_20": 0.1873,
+  "sunday_pct_share": 13.0119,
+  "n_countries": 43,
+  "n_countries_below_segment_min": 27,
+  "date_min": "2009-12-01 07:45:00",
+  "date_max": "2011-12-09 12:50:00",
+  "zero_price_positive_qty_count": 2621
+}
