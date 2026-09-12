@@ -1,0 +1,96 @@
+"""Stage 11 — generates docs/data_dictionary.md from a single source of truth.
+
+Every column in this file is documented from a Python dict (COLUMN_DOCS)
+keyed against src.export.EXPORT_COLUMNS, so the dictionary cannot drift
+from the actual dashboard_export schema (plan sec 11.4) — a set-equality
+assertion in checks/gate_11.py enforces this.
+
+Usage::
+
+    python -m src.data_dictionary
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from src.export import EXPORT_COLUMNS
+
+DOCS_DIR = Path(__file__).resolve().parents[1] / "docs"
+OUT_PATH = DOCS_DIR / "data_dictionary.md"
+
+GROUND_TRUTH_COLS = {"is_synthetic_anomaly", "anomaly_type"}
+
+# name -> (type, source stage, definition, valid range)
+COLUMN_DOCS: dict[str, tuple[str, str, str, str]] = {
+    "txn_id": ("string", "Stage 3 (inject)", "Stable transaction identifier assigned after injected and real rows are concatenated and sorted; carries no signal about injection status (Leakage Firewall).", "unique per row"),
+    "invoice": ("string", "Stage 1 (ingest)", "Invoice number; a leading 'C' denotes a cancellation (excluded upstream of this export).", "6-char alphanumeric"),
+    "stock_code": ("string", "Stage 1 (ingest)", "Product code; non-product codes (POST, DOT, ...) are flagged via is_adjustment.", "free text"),
+    "description": ("string, nullable", "Stage 1 (ingest)", "Product description as recorded on the invoice line.", "free text"),
+    "customer_id": ("string", "Stage 2 (clean)", "Customer identifier; missing values retained as 'UNASSIGNED' (PD-01), not dropped.", "numeric string or 'UNASSIGNED'"),
+    "country": ("string", "Stage 1 (ingest)", "Customer's recorded country.", "~40 distinct values"),
+    "quantity": ("int", "Stage 1 (ingest)", "Units on the line; may be negative (returns/adjustments).", "any integer"),
+    "price": ("float", "Stage 1 (ingest)", "Unit price in GBP; may be 0 or negative.", "any float"),
+    "amount": ("float", "Stage 1 (ingest)", "quantity * price — the core value field Benford's Law and outlier detection operate on.", "any float, signed"),
+    "invoice_date": ("datetime", "Stage 1 (ingest)", "Posting date and time, minute granularity.", "2009-12-01 to 2011-12-09"),
+    "year": ("int", "Stage 2 (clean)", "Calendar year of invoice_date.", "2009-2011"),
+    "month": ("int", "Stage 2 (clean)", "Calendar month of invoice_date.", "1-12"),
+    "year_month": ("string", "Stage 2 (clean)", "YYYY-MM — the Benford and rule segmentation key.", "e.g. '2011-09'"),
+    "quarter": ("int", "Stage 2 (clean)", "Calendar quarter.", "1-4"),
+    "day_of_week": ("int", "Stage 2 (clean)", "0=Monday .. 6=Sunday.", "0-6"),
+    "day_name": ("string", "Stage 2 (clean)", "Day name, e.g. 'Monday'.", "Monday..Sunday"),
+    "hour": ("int", "Stage 2 (clean)", "Hour of invoice_date; the dataset carries a usable time-of-day component.", "0-23"),
+    "days_to_month_end": ("int", "Stage 2 (clean)", "Calendar days remaining in the invoice's month; used by the period-end / cut-off rule.", ">=0"),
+    "is_month_end": ("bool", "Stage 2 (clean)", "True if the transaction falls within the period-end window (rules.period_end_days).", "True/False"),
+    "leading_digit": ("int, nullable", "Stage 8 (export)", "First significant digit of |amount| — the Benford test statistic.", "1-9, null if amount==0"),
+    "second_digit": ("int, nullable", "Stage 8 (export)", "Second significant digit of |amount|.", "0-9, null if <2 sig figs"),
+    "is_adjustment": ("bool", "Stage 2 (clean)", "True for non-product stock codes (POST, DOT, BANK CHARGES, ...) — ledger adjustments, excluded from the Benford population but retained and reported (PD-02/2.5).", "True/False"),
+    "is_nonpositive_amount": ("bool", "Stage 2 (clean)", "True where amount <= 0; retained, excluded from Benford only (PD-04).", "True/False"),
+    "has_customer_stats": ("bool", "Stage 2 (clean)", "False for UNASSIGNED customers, whose per-customer z-score features are set to 0.0 rather than computed.", "True/False"),
+    "rule_flag_count": ("int", "Stage 5 (rules)", "Number of rule-based flags fired on this row (0-10 possible, typically 0-5 observed).", ">=0"),
+    "rule_flag_names": ("string", "Stage 5 (rules)", "Comma-separated names of the rule flags that fired, e.g. 'LARGE_AMOUNT, SPLIT_AMOUNT'.", "free text, may be empty"),
+    "benford_flag_any": ("bool", "Stage 7 (validate)", "True if this row's (country, year_month) segment was classified NONCONFORMING on the amount leading-digit test in Stage 4. See DECISIONS.md D-0004 for a caveat on this flag's row-level discriminating power in the current run.", "True/False"),
+    "if_score": ("float", "Stage 6 (models)", "Isolation Forest anomaly score, min-max normalised so higher = more anomalous.", "[0, 1]"),
+    "lof_score": ("float", "Stage 6 (models)", "Local Outlier Factor anomaly score, min-max normalised so higher = more anomalous.", "[0, 1]"),
+    "if_pct": ("float", "Stage 8 (composite)", "Percentile rank of if_score within the scored population — the IF component of the composite score before weighting.", "[0, 1]"),
+    "composite_risk": ("float", "Stage 8 (composite)", "0.50*percentile_rank(if_score) + 0.30*(rule_flag_count/5) + 0.20*benford_flag_any.", "[0, 1]"),
+    "risk_band": ("categorical", "Stage 8 (composite)", "LOW (<0.40) / MEDIUM (0.40-0.60) / HIGH (0.60-0.80) / CRITICAL (>=0.80) — a presentation device over composite_risk.", "LOW/MEDIUM/HIGH/CRITICAL"),
+    "risk_rank": ("int", "Stage 8 (composite)", "Dense 1..N rank by composite_risk descending, ties broken by row order (rank method 'first').", "1..N, no gaps or duplicates"),
+    "is_synthetic_anomaly": ("bool — GROUND TRUTH", "Stage 3 (inject)", "True if this row was synthetically injected. NEVER used as a model feature — present here only because this export is an evaluation artefact, not a model input (plan sec 8.3).", "True/False"),
+    "anomaly_type": ("string — GROUND TRUTH", "Stage 3 (inject)", "'none' for real rows, else one of the six injected archetypes. NEVER used as a model feature.", "none/duplicate/threshold_avoidance/round_number/digit_fabrication/timing/extreme_outlier"),
+}
+
+
+def build_markdown() -> str:
+    lines = [
+        "# Data Dictionary — `dashboard_export.parquet`",
+        "",
+        "Generated by `src/data_dictionary.py` from `src.export.EXPORT_COLUMNS` — the column",
+        "list below is asserted (set equality) against the actual export schema in",
+        "`checks/gate_11.py`, so this file cannot silently drift from the code.",
+        "",
+        "**Ground truth columns are marked explicitly.** They exist to *score* detection",
+        "methods, never to train or flag with them — see the Leakage Firewall,",
+        "`plan/00_MASTER_PLAN.md` sec 6.",
+        "",
+        "| Column | Type | Source stage | Definition | Valid range |",
+        "|---|---|---|---|---|",
+    ]
+    for col in EXPORT_COLUMNS:
+        if col not in COLUMN_DOCS:
+            raise KeyError(f"Undocumented column: {col}")
+        dtype, stage, definition, rng = COLUMN_DOCS[col]
+        marker = "**" if col in GROUND_TRUTH_COLS else ""
+        lines.append(f"| {marker}`{col}`{marker} | {dtype} | {stage} | {definition} | {rng} |")
+    return "\n".join(lines) + "\n"
+
+
+def run() -> Path:
+    DOCS_DIR.mkdir(parents=True, exist_ok=True)
+    OUT_PATH.write_text(build_markdown(), encoding="utf-8")
+    return OUT_PATH
+
+
+if __name__ == "__main__":
+    path = run()
+    print(f"Wrote {path}")

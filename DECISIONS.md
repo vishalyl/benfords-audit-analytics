@@ -137,3 +137,33 @@ The following decisions are pre-made by `plan/00_MASTER_PLAN.md` §7 and require
   before the segment flag can be used as a review trigger — noted in Limitations.
 - **Reversible:** yes — revisiting Stage 4's classification thresholds or Stage 6's
   feature set is future work, tracked in the README "What I'd do next" section.
+
+### D-0005 — README numbers come from a placeholder template; narrative prose is hand-written but number-checked
+- **Stage:** 11
+- **Date:** 2026-09-13
+- **Question:** Plan sec 11.3 requires `src/report_fill.py` to replace `{{metric.path}}`
+  placeholders in `README.template.md` from `reports/metrics/*.json`, failing loudly on
+  any unresolved placeholder. Should every single number anywhere in the README
+  (including multi-sentence interpretive paragraphs) go through a `{{}}` placeholder, or
+  only the headline stats table?
+- **Options considered:**
+  1. Placeholder-ize literally every digit in the README, including inside narrative
+     sentences — maximises mechanical enforcement but produces stilted, hard-to-read
+     prose and placeholders for things like "which digit is driving a given segment"
+     that live in CSVs, not the JSON files `report_fill.py` reads.
+  2. Placeholder-ize the headline stats table and the single-sentence pull-quote (the
+     numbers most likely to be copy-paste-drifted or hand-fabricated), and hand-write
+     the surrounding interpretive prose, keeping every number in it manually verified
+     against the same JSON files before writing.
+- **Decision:** Option 2.
+- **Rationale:** The plan's stated goal (sec 11.3) is eliminating "a README quoting
+  numbers the code no longer produces" — achieved by the table going through
+  `report_fill.py` and failing the build on drift. `checks/gate_11.py` C4 verifies the
+  generator actually ran (the `<!-- generated -->` marker) rather than trying to prove
+  every prose sentence's provenance mechanically.
+- **Impact:** `README.template.md` has ~25 `{{}}` placeholders across the stats table,
+  the hook sentence and the method x anomaly-type matrix; narrative sections (Key
+  Findings interpretation, Limitations, What I'd do next) are prose, hand-checked
+  against `reports/metrics/model_metrics.json` and `data/dashboard/kpi_summary.json`.
+- **Reversible:** yes — more of the prose could be placeholder-ized later if the
+  narrative numbers ever need to change with the data.
