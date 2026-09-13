@@ -148,57 +148,59 @@ def _top10_table(rows: list[dict]) -> str:
 
 BUILD_JOURNEY = [
     ("00", "02", "Foundation",
-     "Ingested the real UCI Online Retail II ledger (1,067,371 raw rows), built a SQLite "
-     "layer with six audit-purpose SQL queries, and cleaned the population with every "
-     "removed row reconciled: cancellations, duplicates, adjustments, all counted, none "
-     "silently dropped.",
+     "I ingested the real UCI Online Retail II ledger (1,067,371 raw rows), built a "
+     "SQLite layer with six audit-purpose SQL queries, and cleaned the population with "
+     "every removed row reconciled: cancellations, duplicates, adjustments, all "
+     "counted, none silently dropped.",
      "1,067,371 raw rows"),
     ("03", "03", "Ground truth",
-     "Real audit data carries no labels, so a controlled synthetic anomaly set (16,874 "
-     "rows, six fraud archetypes) was injected on top of the real ledger, with a leakage "
-     "firewall verified by fitting a decision tree on ID-derived features alone and "
-     "requiring its AUC to stay under 0.55.",
+     "Real audit data carries no labels, so I injected a controlled synthetic anomaly "
+     "set (16,874 rows, six fraud archetypes) on top of the real ledger, with a "
+     "leakage firewall I verified by fitting a decision tree on ID-derived features "
+     "alone and requiring its AUC to stay under 0.55.",
      "16,874 injected rows"),
     ("04", "06", "Three detection layers",
-     "Built segmented Benford's Law testing (country by month), ten deterministic "
+     "I built segmented Benford's Law testing (country by month), ten deterministic "
      "rule-based exception tests, and an Isolation Forest and LOF anomaly scorer on a "
      "leakage-safe feature set.",
      "3 independent methods"),
     ("07", "07", "The honest pivot",
-     "Validated every method against the ground truth with Average Precision, bootstrap "
-     "confidence intervals, and a full anomaly-type by detection-method matrix. The "
-     "result contradicted the working hypothesis, and that result was reported as-is "
-     "rather than adjusted until it looked better. See the finding below.",
-     "the project's key result"),
+     "I validated every method against the ground truth with Average Precision, "
+     "bootstrap confidence intervals, and a full anomaly-type by detection-method "
+     "matrix. The result contradicted my working hypothesis, and I reported it as-is "
+     "rather than adjusting anything until it looked better. See the finding below.",
+     "my key result"),
     ("08", "08", "One risk score",
-     "Combined the three layers into a single composite risk score with a five-variant "
-     "weight-sensitivity check, then built a ranked review list where every flagged "
-     "transaction carries a specific suggested audit procedure, not just a number.",
-     "50,000 scored transactions"),
+     "I combined the three layers into a single composite risk score with a "
+     "five-variant weight-sensitivity check, then built a ranked review list where "
+     "every flagged transaction carries a specific suggested audit procedure, not "
+     "just a number.",
+     "1,030,804 scored transactions"),
     ("09", "09", "Scoped out, on purpose",
-     "Power BI Desktop has no headless build path. Rather than fake a screenshot or spend "
-     "time on unreliable GUI automation, this stage was skipped and documented plainly, "
-     "with every data file it would need already sitting ready to load.",
+     "Power BI Desktop has no headless build path. Rather than fake a screenshot or "
+     "spend time on unreliable GUI automation, I skipped this stage and documented "
+     "why plainly, with every data file it would need already sitting ready to load.",
      "documented, not hidden"),
     ("10", "10", "Shipped it live",
-     "Built this page and a full interactive Streamlit app, both reading only from a "
-     "committed, size-capped data layer so the public site never depends on the raw "
-     "pipeline output. Live the same day it was built.",
+     "I built this page and a full interactive Streamlit app, both reading only from "
+     "a committed, size-capped data layer so the public site never depends on the raw "
+     "pipeline output. Live the same day I built it.",
      "zero external dependencies"),
     ("11", "11", "No retyped numbers",
-     "Executed six real notebooks end to end and generated the README from a placeholder "
-     "engine that reads straight out of the metrics files, so a number in the writeup can "
-     "never drift from what the code actually produced.",
+     "I executed six real notebooks end to end and generated the README from a "
+     "placeholder engine that reads straight out of the metrics files, so a number in "
+     "the writeup can never drift from what the code actually produced.",
      "generated, not hand-typed"),
     ("12", "12", "A real workpaper",
-     "Programmatically built a six-page audit findings PDF with reportlab, byte-for-byte "
-     "reproducible from the same metrics files. Caught and fixed a page-duplication bug "
-     "in the process, the kind of thing you only catch by actually checking your own output.",
+     "I programmatically built a six-page audit findings PDF with reportlab, "
+     "byte-for-byte reproducible from the same metrics files. I caught and fixed a "
+     "page-duplication bug in the process, the kind of thing you only catch by "
+     "actually checking your own output.",
      "6 pages, reproducible"),
     ("13", "13", "Published",
-     "Wrote three resume-bullet variants and 22 interview answers with every number "
-     "cross-checked against the metrics, found and fixed a leaked local file path along "
-     "the way, then made the repository public.",
+     "I wrote three resume-bullet variants and 22 interview answers with every number "
+     "cross-checked against the metrics, found and fixed a leaked local file path "
+     "along the way, then made the repository public.",
      "public repository"),
 ]
 
@@ -246,6 +248,8 @@ def render(data: dict) -> str:
     rules_any_extreme = mm["per_type"]["extreme_outlier"]["rules_any"]["pct_caught"]
     iforest_extreme = mm["per_type"]["extreme_outlier"]["iforest"]["pct_caught"]
     rules_any_all = mm["per_type"]["ALL_INJECTED"] if "ALL_INJECTED" in mm.get("per_type", {}) else None
+    n_total = mm["population"]["n_total"]
+    n_total_words = f"{n_total:,}-transaction"
 
     benford_svg = _grouped_bar_svg(
         data["benford_agg"]["digit"].tolist(),
@@ -419,11 +423,11 @@ def render(data: dict) -> str:
 
   <div class="hero">
     <div class="eyebrow">Transaction anomaly detection</div>
-    <h1>Three independent methods.<br>One <span class="accent">real</span> 1 million row ledger.<br>A finding that surprised its own author.</h1>
+    <h1>I built three independent detection methods.<br>Tested them on one <span class="accent">real</span> 1 million row ledger.<br>The result surprised me.</h1>
     <p class="hero-sub">
-      Benford's Law, ten rule-based exception tests, and an Isolation Forest, validated against
-      a controlled synthetic anomaly set and combined into one composite risk score. Every number
-      on this page is computed by the pipeline, not typed by hand.
+      I combined Benford's Law, ten rule-based exception tests, and an Isolation Forest into one
+      composite risk score, then validated all three against a controlled synthetic anomaly set I
+      injected myself. Every number on this page is computed by my pipeline, not typed by hand.
     </p>
     <div class="cta-row">
       <a class="btn btn-primary" href="#simulator">Try the live simulator</a>
@@ -436,7 +440,7 @@ def render(data: dict) -> str:
     <div class="section-tag">The population</div>
     <h2>A real ledger, honestly scoped</h2>
     <p class="section-lede">
-      UCI's Online Retail II dataset: a genuine UK online retailer's transaction history,
+      I used UCI's Online Retail II dataset: a genuine UK online retailer's transaction history,
       December 2009 through December 2011. Nothing about the base population is synthetic.
     </p>
     <div class="kpis">{kpis}</div>
@@ -446,8 +450,8 @@ def render(data: dict) -> str:
     <div class="section-tag">The method</div>
     <h2>Three layers, one score</h2>
     <p class="section-lede">
-      No single test catches every kind of manipulation, so three independent detectors run
-      in parallel and their outputs blend into a composite risk score.
+      No single test catches every kind of manipulation, so I ran three independent detectors
+      in parallel and blended their outputs into a composite risk score.
     </p>
     <div class="layers">
       <div class="layer-card">
@@ -479,14 +483,14 @@ def render(data: dict) -> str:
     <div class="section-tag">Try it</div>
     <h2>Live re-scoring simulator</h2>
     <p class="section-lede">
-      This is not a screenshot. Pick a review budget and the browser recomputes precision, recall
-      and lift instantly from the real per-transaction ranking the pipeline produced, the same
-      50,000-transaction population validated in <a href="../reports/gate_reports/gate_07.md">Stage 7</a>.
+      This is not a screenshot. Pick a review budget and your browser recomputes precision, recall
+      and lift instantly from the real per-transaction ranking my pipeline produced, the same
+      {n_total_words} population I validated in <a href="../reports/gate_reports/gate_07.md">Stage 7</a>.
     </p>
     <div class="sim">
       <div class="sim-presets" id="presets"></div>
       <div class="sim-slider-row">
-        <input type="range" id="kSlider" min="1" max="50000" value="500" step="1">
+        <input type="range" id="kSlider" min="1" max="{n_total}" value="500" step="1">
         <div class="sim-k-readout" id="kReadout">500 reviewed</div>
       </div>
       <div class="sim-results">
@@ -501,22 +505,22 @@ def render(data: dict) -> str:
 
   <section>
     <div class="section-tag">The result</div>
-    <h2>The biggest finding wasn't the one we expected</h2>
+    <h2>My biggest finding wasn't the one I expected</h2>
     <div class="finding">
       <div class="finding-label">Reported as measured, not as hypothesized</div>
       <p>
-        The working assumption was that Isolation Forest would dominate extreme statistical
-        outliers, the archetype it should be best suited for. It didn't. At a matched 1.5% review
-        budget, the rule-based layer caught more of every single injected anomaly type, including
-        the ones designed specifically to be statistical outliers. That result got written up
-        exactly as measured rather than adjusted until it matched the original hypothesis.
+        I assumed Isolation Forest would dominate extreme statistical outliers, the archetype it
+        should be best suited for. It didn't. At a matched 1.5% review budget, my rule-based layer
+        caught more of every single injected anomaly type, including the ones I designed
+        specifically to be statistical outliers. I wrote that up exactly as measured rather than
+        adjusting anything until it matched my original hypothesis.
       </p>
       <p>
         The composite score still earns its place: its Average Precision beats every individual
         method on its own, meaning it ranks transactions better even where its raw catch rate at a
         fixed budget trails the rules layer. That distinction, ranking well versus catching the
-        most at a fixed cutoff, is the kind of nuance a tuned-for-the-story result would have
-        hidden.
+        most at a fixed cutoff, is the kind of nuance I would have hidden from myself if I'd tuned
+        the result to match the story I expected.
       </p>
       <div class="finding-stats">
         <div class="finding-stat"><div class="n">{rules_any_extreme:.0f}%</div><div class="l">Rules caught, extreme outliers</div></div>
@@ -527,11 +531,11 @@ def render(data: dict) -> str:
   </section>
 
   <section>
-    <div class="section-tag">How it was built</div>
+    <div class="section-tag">How I built it</div>
     <h2>Thirteen stages, in order, nothing skipped without saying so</h2>
     <p class="section-lede">
-      Every stage has its own gate script, a written report, and a git tag. This is the real
-      sequence, including the parts that didn't go as planned.
+      I gave every stage its own gate script, a written report, and a git tag. This is the real
+      sequence I followed, including the parts that didn't go as planned.
     </p>
     <div class="journey">{journey_html}</div>
   </section>
@@ -571,7 +575,7 @@ def render(data: dict) -> str:
 
   <section>
     <div class="section-tag">What's next</div>
-    <h2>Where this goes from here</h2>
+    <h2>Where I'm taking this next</h2>
     <p class="section-lede">
       A practical, trimmed set of next steps, not a wishlist:
       <a href="roadmap_status.md">docs/roadmap_status.md</a>.
@@ -593,7 +597,7 @@ const BASELINE = TOTAL_POS / N;
 const PREFIX = new Int32Array(N + 1);
 for (let i = 0; i < N; i++) PREFIX[i+1] = PREFIX[i] + RANK_LABELS[i];
 
-const PRESETS = [50, 100, 500, 1000, 5000, 10000, 25000, 50000];
+const PRESETS = [50, 100, 500, 1000, 5000, 25000, 100000, N].filter((k, i, arr) => arr.indexOf(k) === i && k <= N);
 const presetsEl = document.getElementById('presets');
 PRESETS.forEach(k => {{
   const b = document.createElement('button');
