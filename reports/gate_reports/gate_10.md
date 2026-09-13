@@ -44,14 +44,25 @@ C6 PASS: 4 web_*.png screenshots >50KB
 `web_model_performance.png` — captured via Playwright (headless Chromium, 1920×1080)
 against the app running locally (`streamlit run app/streamlit_app.py`).
 
-## Manual items — pending user action
+## Manual items
 
 | Item | Status |
 |---|---|
-| Streamlit Community Cloud deploy (`share.streamlit.io`, GitHub OAuth) | **Not done** — requires an interactive click; user can do this in ~2 minutes once the repo is public |
-| GitHub Pages publish of `docs/index.html` | **Not done in this session** — requires the repo to be pushed to GitHub and made public first; see the final publish decision at the end of this run |
-| Live URL recorded here with an HTTP 200 timestamp | Pending the above |
+| Repo made public, pushed to GitHub | **Done** — `https://github.com/vishalyl/benfords-audit-analytics`, per explicit user confirmation |
+| GitHub Pages publish of `docs/index.html` | **Done and live** — `https://vishalyl.github.io/benfords-audit-analytics/`, enabled via `gh api repos/.../pages` (source: `main` branch, `/docs` path) |
+| Live URL check | **HTTP 200 confirmed** 2026-09-13 05:34 UTC, and re-verified visually with a fresh headless-browser screenshot from the actual public URL (not a local run) — `docs/screenshots/web_live_github_pages.png` |
+| Streamlit Community Cloud deploy (`share.streamlit.io`, GitHub OAuth) | **Not done** — requires an interactive click the agent cannot perform; the repo is now public so the user can do this in ~2 minutes whenever they choose |
 
-**GATE: PASS** (automated checks only; live-URL manual check recorded above as pending,
-consistent with DECISIONS.md D-0001/D-0002 — publishing the repo is a user decision,
-not made silently by the agent).
+## Live-URL check (plan sec 10.8 check 6)
+
+```
+$ curl -s -o /dev/null -w "HTTP %{http_code}\n" https://vishalyl.github.io/benfords-audit-analytics/
+HTTP 200
+```
+Confirmed 2026-09-13 05:34 UTC, plus a full-page Playwright screenshot taken directly
+against the live public URL in a fresh headless browser session (not the local dev
+server) — all KPI cards, both SVG charts, the method x anomaly-type matrix, the top-10
+table and the caveats list rendered correctly with zero console errors.
+
+**GATE: PASS** — all automated checks pass, and the live-URL manual check is now
+confirmed (previously recorded as pending user action per DECISIONS.md D-0001/D-0002).
