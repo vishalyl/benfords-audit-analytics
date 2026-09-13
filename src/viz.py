@@ -1,4 +1,4 @@
-"""Shared plotting configuration and helpers — one consistent palette, no default cycling."""
+"""Shared plotting configuration and helpers, one consistent palette, no default cycling."""
 from __future__ import annotations
 
 import json

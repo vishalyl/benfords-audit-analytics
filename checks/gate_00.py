@@ -1,4 +1,4 @@
-"""Stage 0 gate — environment bootstrap."""
+"""Stage 0 gate, environment bootstrap."""
 from __future__ import annotations
 
 import subprocess
@@ -20,7 +20,7 @@ REQUIRED_FILES = ["config.yaml", "CLAUDE.md", ".gitignore", "requirements.txt"]
 
 def _redact(path_str: str) -> str:
     """Replace the local repo-root prefix with a placeholder before writing to a
-    committed report — a gate report is published, and the absolute filesystem
+    committed report. A gate report is published, and the absolute filesystem
     path it would otherwise contain leaks the local username (DECISIONS.md D-0006)."""
     return path_str.replace(str(REPO_ROOT), "<repo-root>")
 
@@ -91,7 +91,7 @@ def main() -> int:
     report_path = REPO_ROOT / "reports/gate_reports/gate_00.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     with open(report_path, "w", encoding="utf-8") as fh:
-        fh.write("# Stage 0 Gate Report — Environment Bootstrap\n\n")
+        fh.write("# Stage 0 Gate Report: Environment Bootstrap\n\n")
         fh.write(f"Python version: `{sys.version}`\n\n")
         fh.write(f"Interpreter: `{_redact(sys.executable)}`\n\n")
         fh.write(f"Raw xlsx size (MB): {raw_xlsx.stat().st_size / 1e6:.2f}\n\n" if raw_xlsx.exists() else "Raw xlsx: MISSING\n\n")

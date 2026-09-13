@@ -1,4 +1,4 @@
-"""Stage 2 — cleaning with a full reconciliation ledger. No row disappears unexplained."""
+"""Stage 2, cleaning with a full reconciliation ledger. No row disappears unexplained."""
 from __future__ import annotations
 
 import argparse
@@ -172,7 +172,7 @@ def make_diagnostic_figures(df_full: pd.DataFrame, figures_dir) -> dict:
     ax.bar(dow_counts.index, dow_counts.values, color=colors)
     ax.set_ylabel("Transaction count")
     sunday_share = 100 * dow_counts["Sunday"] / dow_counts.sum()
-    ax.set_title(f"Sunday carries {sunday_share:.2f}% of volume — a live trading day in this dataset")
+    ax.set_title(f"Sunday carries {sunday_share:.2f}% of volume, a live trading day in this dataset")
     plt.xticks(rotation=30)
     save_fig(fig, "dow_distribution.png", "cleaning")
     findings["sunday_pct_share"] = round(float(sunday_share), 4)
@@ -182,7 +182,7 @@ def make_diagnostic_figures(df_full: pd.DataFrame, figures_dir) -> dict:
     ax.hist(np.log10(pos_amount), bins=80, color=PALETTE["secondary"])
     ax.set_xlabel("log10(amount), GBP")
     ax.set_ylabel("Count")
-    ax.set_title("Amount distribution is heavy-tailed — justifies log1p transform downstream")
+    ax.set_title("Amount distribution is heavy-tailed, justifies log1p transform downstream")
     save_fig(fig, "amount_distribution.png", "cleaning")
 
     fig, ax = plt.subplots()

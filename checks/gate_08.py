@@ -1,14 +1,10 @@
 #!/usr/bin/env python
-"""Gate 08 — Composite risk score & dashboard export (Stage 8).
+"""Gate 08 -- Composite risk score & dashboard export (Stage 8).
 
-Checks adapted from plan/03_STAGES_7-9.md sec 8.6. Check 1's ">100,000
-distinct values" literal is impossible on a 50,000-row evaluation population
-(see DECISIONS.md D-0003) and is replaced with ">=70% of rows have a unique
-score" — the same underlying intent (a genuinely continuous score, not a
-handful of repeated buckets). The 70% bar (not a rounder 95%) reflects a real
-ceiling: if_score itself (Stage 6, IsolationForest decision_function) has
-only 36,564 distinct values across the 50,000-row sample, so no downstream
-blend of it can exceed ~73% distinct — verified empirically, not assumed.
+Checks per plan/03_STAGES_7-9.md sec 8.6. Check 1 is the plan's literal
+">100,000 distinct values" now that Stage 6 scores the full 1,030,804-row
+population (DECISIONS.md D-0003 is resolved); composite_risk has 337,950
+distinct values in practice, comfortably clearing it.
 """
 from __future__ import annotations
 
@@ -49,11 +45,11 @@ def check() -> tuple[bool, list[str]]:
     cr = export["composite_risk"]
     in_range = cr.between(0, 1).all()
     no_nulls = not cr.isna().any()
-    distinct_frac = cr.nunique() / len(cr)
-    if in_range and no_nulls and distinct_frac >= 0.70:
-        msgs.append(f"C1 PASS: composite_risk in [0,1], no nulls, {distinct_frac:.1%} distinct values")
+    n_distinct = cr.nunique()
+    if in_range and no_nulls and n_distinct > 100_000:
+        msgs.append(f"C1 PASS: composite_risk in [0,1], no nulls, {n_distinct:,} distinct values (>100,000)")
     else:
-        msgs.append(f"C1 FAIL: in_range={in_range} no_nulls={no_nulls} distinct_frac={distinct_frac:.3f}")
+        msgs.append(f"C1 FAIL: in_range={in_range} no_nulls={no_nulls} n_distinct={n_distinct:,}")
         passed = False
 
     # C2: risk_band has all four levels present
@@ -61,7 +57,7 @@ def check() -> tuple[bool, list[str]]:
     expected_bands = {"LOW", "MEDIUM", "HIGH", "CRITICAL"}
     if expected_bands.issubset(bands):
         counts = export["risk_band"].value_counts().to_dict()
-        msgs.append(f"C2 PASS: all 4 bands present — {counts}")
+        msgs.append(f"C2 PASS: all 4 bands present: {counts}")
     else:
         msgs.append(f"C2 FAIL: missing bands {expected_bands - bands}")
         passed = False
@@ -106,7 +102,7 @@ def check() -> tuple[bool, list[str]]:
     else:
         msgs.append(
             f"C6 WARN: composite AP={comp['primary_average_precision']} < "
-            f"best single method AP={comp['best_single_method_ap']} — reported honestly, see README Limitations"
+            f"best single method AP={comp['best_single_method_ap']}, reported honestly, see README Limitations"
         )
 
     # C7: weight sensitivity has >=5 variants with AP computed
@@ -146,12 +142,18 @@ def check() -> tuple[bool, list[str]]:
         msgs.append("C10 FAIL: kpi_summary.json AP does not match model_metrics.json")
         passed = False
 
-    # C11: determinism — recomputing composite + top_risk_list from the same
+    # C11: determinism -- recomputing composite + top_risk_list from the same
     # seeded pipeline yields an identical top_risk_transactions.csv hash.
+    # Hash the ORIGINAL FILE'S RAW BYTES, not a pandas read+rewrite of it: a
+    # read_csv -> to_csv round trip on one side only can itself introduce a
+    # spurious one-ULP float text difference (e.g. a float32 price promoted
+    # to float64 not round-tripping through a decimal string identically),
+    # which looks exactly like non-determinism but is a comparison artifact,
+    # not a real bug -- caught once here when it produced a false C11 FAIL.
     from src.composite import run as composite_run, top_risk_list
     rerun = composite_run()["df"]
     top_rerun = top_risk_list(rerun, n=n_expected)
-    h1 = hashlib.sha256(pd.read_csv(TOP_RISK_CSV).to_csv(index=False).encode()).hexdigest()
+    h1 = hashlib.sha256(Path(TOP_RISK_CSV).read_bytes()).hexdigest()
     h2 = hashlib.sha256(top_rerun.to_csv(index=False).encode()).hexdigest()
     if h1 == h2:
         msgs.append("C11 PASS: re-running composite scoring reproduces an identical top_risk_transactions.csv hash")

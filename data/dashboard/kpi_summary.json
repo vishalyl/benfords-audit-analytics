@@ -11,13 +11,13 @@
   "n_segments_flagged": 66,
   "n_injected": 16874,
   "anomaly_rate": 0.01637,
-  "scored_population": 50000,
-  "pct_high_critical": 20.31,
-  "headline_average_precision": 0.181662,
+  "scored_population": 1030804,
+  "pct_high_critical": 20.17,
+  "headline_average_precision": 0.165573,
   "headline_ap_ci95": [
-    0.160061,
-    0.210854
+    0.15997,
+    0.17144
   ],
-  "headline_recall_at_500": 0.250623,
-  "headline_precision_at_500": 0.402
+  "headline_recall_at_500": 0.015053,
+  "headline_precision_at_500": 0.508
 }

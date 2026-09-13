@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Gate 13 — Resume bullets, interview prep & publish checklist (Stage 13).
+"""Gate 13: Resume bullets, interview prep & publish checklist (Stage 13).
 
 Checks per plan/04_STAGES_10-13.md sec 13.3. Check 2 (anti-fabrication) is
 implemented as a tolerant numeric cross-check rather than literal substring
@@ -104,7 +104,7 @@ def check() -> tuple[bool, list[str]]:
         msgs.append(f"C2 FAIL: unmatched numbers in resume bullets: {unmatched}")
         passed = False
 
-    # C3: no leaked personal file paths in tracked files (adapted — see DECISIONS.md D-0006:
+    # C3: no leaked personal file paths in tracked files (adapted, see DECISIONS.md D-0006:
     # a literal "visha" grep also matches the owner's real name "Vishal" in attribution
     # fields, which is legitimate; this checks for actual absolute local paths instead).
     # Excludes plan/ (states the owner's name in its own header) and this file itself
@@ -137,7 +137,7 @@ def check() -> tuple[bool, list[str]]:
         msgs.append(f"C5 FAIL: tracked files >50MB: {big}")
         passed = False
 
-    # C6: remote set, main pushed, git status clean (manual/pending — publishing is a user decision)
+    # C6: remote set, main pushed, git status clean (manual/pending, publishing is a user decision)
     remote = subprocess.run(["git", "remote", "-v"], capture_output=True, text=True).stdout.strip()
     status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True).stdout.strip()
     if remote and not status:
@@ -145,13 +145,13 @@ def check() -> tuple[bool, list[str]]:
     else:
         msgs.append(
             f"C6 PENDING: remote={'set' if remote else 'not set'}, "
-            f"working_tree={'clean' if not status else 'has uncommitted changes'} — "
+            f"working_tree={'clean' if not status else 'has uncommitted changes'}, "
             "publishing to a public GitHub remote is a user decision, not made silently by the agent"
         )
-        # not a hard failure of the gate — recorded, not blocking (see gate report)
+        # not a hard failure of the gate, recorded, not blocking (see gate report)
 
     # C7: gate_00..gate_12 exist (gate_13.md is written by this very script at the end
-    # of this run, so checking for it here would always fail on a fresh run — its
+    # of this run, so checking for it here would always fail on a fresh run; its
     # existence is guaranteed by the act of this script completing).
     missing_reports = [n for n in range(13) if not Path(f"reports/gate_reports/gate_{n:02d}.md").exists()]
     if not missing_reports:

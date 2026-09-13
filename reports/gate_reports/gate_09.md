@@ -1,6 +1,6 @@
-# Gate 09 — Power BI Dashboard
+# Gate 09: Power BI Dashboard
 
-**Stage:** 9 · **Date:** 2026-09-12 · **Status: SKIPPED (not PASS/FAIL — deliberately out of scope)**
+**Stage:** 9 · **Date:** 2026-09-12 · **Status: SKIPPED (not PASS/FAIL, deliberately out of scope)**
 
 Power BI Desktop is a Windows GUI application with no headless/CLI authoring path, so
 an autonomous coding agent cannot build the five-page `.pbix` this stage specifies. Per
@@ -21,7 +21,7 @@ Full reasoning, options considered and impact: **`DECISIONS.md` D-0001.**
 ## Definition-of-Done impact
 
 The project-level checklist item "`.pbix` opens, 5 pages, slicers work" is **not**
-satisfied by this run — recorded plainly here and in `README.md` sec 5 and sec 8
+satisfied by this run, recorded plainly here and in `README.md` sec 5 and sec 8
 (Limitations), rather than silently omitted from the final accounting.
 
-**STATUS: SKIPPED — see DECISIONS.md D-0001**
+**STATUS: SKIPPED, see DECISIONS.md D-0001**

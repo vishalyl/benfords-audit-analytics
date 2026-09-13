@@ -1,6 +1,6 @@
 # Power BI Build Notes
 
-**Status: Stage 9 (the `.pbix` itself) was out of scope for this run — see
+**Status: Stage 9 (the `.pbix` itself) was out of scope for this run, see
 `DECISIONS.md` D-0001.** Power BI Desktop is a Windows GUI application with no
 headless/CLI authoring path, so an autonomous agent cannot build the five-page
 dashboard the master plan specifies (`plan/03_STAGES_7-9.md` Stage 9). This file
@@ -28,7 +28,7 @@ All data Stage 9 would consume is produced by Stages 7-8 and lives here:
 2. Get Data -> Parquet -> `data/processed/dashboard_export.parquet` as `fact_transactions`,
    plus each `data/dashboard/*.csv` as its own table.
 3. Follow the data model, DAX measures (paste-ready), and page-by-page visual
-   specification in `plan/03_STAGES_7-9.md` sec 9.2-9.4 verbatim — every field well,
+   specification in `plan/03_STAGES_7-9.md` sec 9.2-9.4 verbatim. Every field well,
    every measure, and every threshold is already written out there; no design
    decisions are left open.
 4. Apply `dashboard/theme.json` once it is created (not yet built this run).

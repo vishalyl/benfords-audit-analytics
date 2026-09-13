@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Gate 06 — Validate anomaly scoring (Stage 6).
+"""Gate 06, Validate anomaly scoring (Stage 6).
 
 Checks:
   - transactions_scored.parquet exists with scoring columns

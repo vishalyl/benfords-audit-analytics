@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Gate 07 — Validation against ground truth (Stage 7).
+"""Gate 07: Validation against ground truth (Stage 7).
 
 Checks (plan/03_STAGES_7-9.md sec 7.7), 1-5 and 8-11 hard-fail the gate;
 6-7 are demoted to WARN per DECISIONS.md D-0004 (the measured numbers
@@ -37,7 +37,7 @@ def check() -> tuple[bool, list[str]]:
     m = json.loads(METRICS_PATH.read_text())
     matrix = pd.read_csv(MATRIX_PATH)
 
-    # C1/C2: files exist and parse — already true if we got here.
+    # C1/C2: files exist and parse -- already true if we got here.
     msgs.append("C1/C2: model_metrics.json and method_comparison.csv parse OK")
 
     # C3: average_precision(composite) strictly > baseline_precision
@@ -53,7 +53,7 @@ def check() -> tuple[bool, list[str]]:
     if 0.05 <= comp_ap <= 0.85:
         msgs.append(f"C4 PASS: composite AP={comp_ap} in [0.05, 0.85]")
     else:
-        msgs.append(f"C4 WARN: composite AP={comp_ap} outside [0.05, 0.85] — investigate, do not celebrate")
+        msgs.append(f"C4 WARN: composite AP={comp_ap} outside [0.05, 0.85], investigate, do not celebrate")
 
     # C5: method_comparison.csv has a row for every (type x method) pair, incl sentinels, no nulls
     required_rows = {"ALL_INJECTED", "REAL_ROWS"}
@@ -65,10 +65,10 @@ def check() -> tuple[bool, list[str]]:
         msgs.append(f"C5 FAIL: sentinels_present={has_sentinels} no_nulls={no_nulls}")
         passed = False
 
-    # C6 (WARN per D-0004): complementarity — one type where rules >=20pp over iforest, one the reverse
+    # C6 (WARN per D-0004): complementarity -- one type where rules >=20pp over iforest, one the reverse
     check6 = m.get("complementarity_check", {})
     if check6.get("passes"):
-        msgs.append(f"C6 PASS: complementarity holds — {check6.get('gaps_pct_points')}")
+        msgs.append(f"C6 PASS: complementarity holds: {check6.get('gaps_pct_points')}")
     else:
         msgs.append(
             "C6 WARN (non-blocking, see DECISIONS.md D-0004): rules_any beats iforest on every "
@@ -87,7 +87,7 @@ def check() -> tuple[bool, list[str]]:
         else:
             msgs.append(
                 f"C7 WARN (non-blocking, see DECISIONS.md D-0004): benford_any digit_fabrication="
-                f"{df_pct}% vs REAL_ROWS={real_pct}% — segment flag over-triggers in this run "
+                f"{df_pct}% vs REAL_ROWS={real_pct}%, segment flag over-triggers in this run "
                 "(all 66 assessed segments were classified NONCONFORMING in Stage 4), so it is not "
                 "discriminating at row level despite being a genuine population-level finding."
             )
@@ -108,7 +108,7 @@ def check() -> tuple[bool, list[str]]:
     if len(ci) == 2 and ci[0] > baseline:
         msgs.append(f"C9 PASS: AP 95% CI={ci}, lower bound > baseline={baseline}")
     else:
-        msgs.append(f"C9 WARN: AP 95% CI={ci} does not clear baseline={baseline} — small-sample CI, noted in report")
+        msgs.append(f"C9 WARN: AP 95% CI={ci} does not clear baseline={baseline}, small-sample CI, noted in report")
 
     # C10: all 8 figures exist and are >20KB
     fig_ok = True

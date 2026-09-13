@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Gate 04 — Validate Benford's Law analysis (Stage 4).
+"""Gate 04, Validate Benford's Law analysis (Stage 4).
 
 Checks:
   - Output files exist (benford_aggregate.csv, benford_segments.csv, benford_summary.json)

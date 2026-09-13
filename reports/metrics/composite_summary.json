@@ -1,13 +1,13 @@
 {
-  "n_rows": 50000,
-  "composite_risk_mean": 0.450476,
-  "composite_risk_std": 0.158631,
-  "n_distinct_scores": 36586,
+  "n_rows": 1030804,
+  "composite_risk_mean": 0.450487,
+  "composite_risk_std": 0.158808,
+  "n_distinct_scores": 337950,
   "band_counts": {
-    "LOW": 21162,
-    "MEDIUM": 18681,
-    "HIGH": 9435,
-    "CRITICAL": 722
+    "LOW": 436639,
+    "MEDIUM": 386266,
+    "HIGH": 192891,
+    "CRITICAL": 15008
   },
   "weight_sensitivity": [
     {
@@ -15,54 +15,54 @@
       "w_if": 0.5,
       "w_rules": 0.3,
       "w_benford": 0.2,
-      "average_precision": 0.181662,
-      "recall_at_1000": 0.28803,
-      "precision_at_100": 0.54
+      "average_precision": 0.165573,
+      "recall_at_1000": 0.025424,
+      "precision_at_100": 0.12
     },
     {
       "variant": "IF-heavy",
       "w_if": 0.7,
       "w_rules": 0.2,
       "w_benford": 0.1,
-      "average_precision": 0.191371,
-      "recall_at_1000": 0.310474,
-      "precision_at_100": 0.55
+      "average_precision": 0.177048,
+      "recall_at_1000": 0.025602,
+      "precision_at_100": 0.12
     },
     {
       "variant": "Rules-heavy",
       "w_if": 0.2,
       "w_rules": 0.6,
       "w_benford": 0.2,
-      "average_precision": 0.192499,
-      "recall_at_1000": 0.28803,
-      "precision_at_100": 0.54
+      "average_precision": 0.174371,
+      "recall_at_1000": 0.025424,
+      "precision_at_100": 0.12
     },
     {
       "variant": "Equal",
       "w_if": 0.34,
       "w_rules": 0.33,
       "w_benford": 0.33,
-      "average_precision": 0.180651,
-      "recall_at_1000": 0.28803,
-      "precision_at_100": 0.54
+      "average_precision": 0.163192,
+      "recall_at_1000": 0.025424,
+      "precision_at_100": 0.12
     },
     {
       "variant": "No-Benford",
       "w_if": 0.6,
       "w_rules": 0.4,
       "w_benford": 0.0,
-      "average_precision": 0.176742,
-      "recall_at_1000": 0.306733,
-      "precision_at_100": 0.52
+      "average_precision": 0.159903,
+      "recall_at_1000": 0.025839,
+      "precision_at_100": 0.14
     }
   ],
-  "primary_average_precision": 0.181662,
+  "primary_average_precision": 0.165573,
   "single_method_average_precision": {
-    "if_only": 0.13605,
-    "rules_only": 0.134663,
-    "benford_only": 0.016016
+    "if_only": 0.135522,
+    "rules_only": 0.118041,
+    "benford_only": 0.016283
   },
-  "best_single_method_ap": 0.13605,
+  "best_single_method_ap": 0.135522,
   "composite_beats_best_single_method": true,
   "top_k_export": 50
 }

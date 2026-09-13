@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Gate 05 — Validate rule-based checks (Stage 5).
+"""Gate 05, Validate rule-based checks (Stage 5).
 
 Checks:
   - transactions_flagged.parquet exists and has rule_flags column

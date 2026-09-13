@@ -1,4 +1,4 @@
-"""Stage 11 — fills README.template.md placeholders from reports/metrics/*.json
+"""Stage 11, fills README.template.md placeholders from reports/metrics/*.json
 and data/dashboard/*.json. Fails loudly on any unresolved placeholder so the
 README can never silently quote a number the code no longer produces
 (plan sec 11.3).

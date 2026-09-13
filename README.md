@@ -6,7 +6,7 @@
 > A 1,013,930-line UK online-retail sales ledger, analysed with three
 > independent detection layers: segmented Benford's Law, deterministic rule-based red
 > flags, and Isolation Forest, combined into a composite risk score validated at
-> Average Precision 0.1817 against a
+> Average Precision 0.1656 against a
 > 1.64% synthetic-anomaly ground truth.
 
 **[▶ Live dashboard](https://vishalyl.github.io/benfords-audit-analytics/)** · **[📓 Notebooks](notebooks/)** · **[📄 Audit findings workpaper (PDF)](reports/audit_findings_workpaper.pdf)**
@@ -71,21 +71,21 @@ See `<!-- generated -->` at the bottom of this file.**
 | Aggregate Benford conformity | MAD 0.0251, **NONCONFORMING** |
 | Segments assessed / flagged nonconforming | 66 / 66 |
 | Injected anomalies | 16,874 (1.64% of the cleaned population) |
-| Isolation Forest, Average Precision | 0.1361 vs a 0.0160 random baseline |
-| Composite score, Average Precision | 0.1817 (95% CI 0.1601 to 0.2109) |
-| Precision at 500 reviewed | 40.2%, reviewing the top 500 of 50,000 scored transactions surfaces 25.1% of the planted anomalies |
-| Composite vs. best single method (AP) | 0.1817 vs 0.1361 |
+| Isolation Forest, Average Precision | 0.1355 vs a 0.0164 random baseline |
+| Composite score, Average Precision | 0.1656 (95% CI 0.1600 to 0.1714) |
+| Precision at 500 reviewed | 50.8%, reviewing the top 500 of 1,030,804 scored transactions surfaces 1.5% of the planted anomalies |
+| Composite vs. best single method (AP) | 0.1656 vs 0.1355 |
 
 ### The anomaly-type x detection-method matrix
 
 | Type | Benford | Rules | Isolation Forest | LOF | Composite |
 |---|---|---|---|---|---|
-| digit_fabrication | 89.19% | 46.85% | 0.9% | 17.12% | 0.0% |
-| duplicate | 92.62% | 27.52% | 2.68% | 4.03% | 3.36% |
-| extreme_outlier | 93.7% | 86.61% | 33.86% | 31.5% | 38.58% |
-| round_number | 95.28% | 100.0% | 71.65% | 13.39% | 70.08% |
-| threshold_avoidance | 93.08% | 100.0% | 61.01% | 18.87% | 53.46% |
-| timing | 92.25% | 18.6% | 0.78% | 0.78% | 0.78% |
+| digit_fabrication | 93.65% | 45.78% | 2.49% | 2.53% | 1.18% |
+| duplicate | 90.74% | 25.27% | 2.93% | 0.2% | 2.48% |
+| extreme_outlier | 91.32% | 84.85% | 24.47% | 3.91% | 37.25% |
+| round_number | 93.05% | 100.0% | 71.7% | 1.5% | 70.64% |
+| threshold_avoidance | 92.78% | 100.0% | 55.63% | 1.74% | 52.71% |
+| timing | 92.66% | 15.98% | 1.07% | 0.28% | 0.87% |
 
 **Honest finding, not the plan's template narrative.** In this run, rule-based checks
 catch every injected anomaly type at a higher rate than Isolation Forest at a matched
@@ -168,7 +168,7 @@ plan/        the master plan this build followed
    false positives when a method flags them.
 3. Isolation Forest's contamination was set to the known injection rate; a real
    engagement does not know the true anomaly rate in advance.
-4. Isolation Forest / LOF were fit on a 50,000-row
+4. Isolation Forest / LOF were fit on a 1,030,804-row
    sample of the 1,013,930-row cleaned population. Every
    model/composite figure in this README describes that sample, not the full ledger
    (`DECISIONS.md` D-0003).

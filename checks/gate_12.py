@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Gate 12 — Audit findings PDF workpaper (Stage 12).
+"""Gate 12: Audit findings PDF workpaper (Stage 12).
 
 Checks per plan/04_STAGES_10-13.md sec 12.4.
 """
@@ -77,7 +77,7 @@ def check() -> tuple[bool, list[str]]:
         msgs.append("C5 FAIL: an embedded figure is missing from reports/figures/")
         passed = False
 
-    # C6: determinism — regenerating produces the same page count and headline numbers
+    # C6: determinism -- regenerating produces the same page count and headline numbers
     from src.workpaper import run as workpaper_run
     workpaper_run()
     reader2 = PdfReader(str(PDF_PATH))
@@ -86,7 +86,7 @@ def check() -> tuple[bool, list[str]]:
     if n_pages2 == n_pages and text2 == text:
         msgs.append("C6 PASS: regenerating produces the same page count and text")
     else:
-        msgs.append(f"C6 WARN: regeneration differs (pages {n_pages} vs {n_pages2}) — likely a non-deterministic reportlab byte, text content re-verified separately")
+        msgs.append(f"C6 WARN: regeneration differs (pages {n_pages} vs {n_pages2}), likely a non-deterministic reportlab byte, text content re-verified separately")
 
     msgs.insert(0, "GATE 12: PASS" if passed else "GATE 12: FAIL")
     return passed, msgs

@@ -1,4 +1,4 @@
-"""Stage 3 — Synthetic anomaly injection with six fraud archetypes.
+"""Stage 3, Synthetic anomaly injection with six fraud archetypes.
 
 Produces a ground-truth labeled dataset where ~1.5% of rows carry injected
 anomalies across six types.  All injected rows are individually plausible
@@ -6,7 +6,7 @@ anomalies across six types.  All injected rows are individually plausible
 
 Output files:
   - data/processed/transactions_labeled.parquet + .csv
-  - data/processed/injected_anomalies.csv  (committed — small ground-truth log)
+  - data/processed/injected_anomalies.csv  (committed, small ground-truth log)
   - reports/metrics/injection_summary.json
   - reports/figures/injection_*.png
 """
@@ -138,7 +138,7 @@ def in_threshold_band(amt: float, bands: list[tuple[float, float]]) -> bool:
 
 def inject_duplicate(base: pd.DataFrame, n: int, rng: np.random.Generator,
                      config: Any) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Duplicate billing — copy a real row under a new invoice + shifted date."""
+    """Duplicate billing, copy a real row under a new invoice + shifted date."""
     pool = base[
         (base["amount"] > 0) &
         (base["customer_id"] != cfg.cleaning.unassigned_customer_label) &
@@ -150,7 +150,7 @@ def inject_duplicate(base: pd.DataFrame, n: int, rng: np.random.Generator,
     if n == 0:
         return pd.DataFrame(), pd.DataFrame()
 
-    # Weighted sample — higher amounts more likely to be duplicated
+    # Weighted sample, higher amounts more likely to be duplicated
     weights = np.log1p(pool["amount"].values)
     weights /= weights.sum()
     idx = rng.choice(len(pool), size=n, replace=False, p=weights)
@@ -569,7 +569,7 @@ def inject_timing(base: pd.DataFrame, n: int, rng: np.random.Generator,
 
 def inject_extreme_outlier(base: pd.DataFrame, n: int, rng: np.random.Generator,
                            config: Any) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Unsupported material entries — amounts 10-50x customer norm."""
+    """Unsupported material entries, amounts 10-50x customer norm."""
     bands = config.rules.threshold_bands if hasattr(config, "rules") else []
 
     # Customers with enough history for a meaningful "norm"
@@ -668,7 +668,7 @@ INJECTORS = {
 }
 
 def assemble(base, injected_frames, log_frames, rng, types):
-    """Placeholder — injection now handled inline in run()."""
+    """Placeholder, injection now handled inline in run()."""
     all_inj = pd.concat(injected_frames, ignore_index=True) if injected_frames else pd.DataFrame()
     base_t = base.copy()
     base_t["_anomaly_type"] = "none"
@@ -785,7 +785,7 @@ def make_injection_figures(base, labeled, figures_dir):
     ax.plot([0, 1], [0, 1], color="#999999", linestyle="--", label="Uniform reference")
     ax.set_xlabel("Position in sorted frame")
     ax.set_ylabel("Cumulative proportion")
-    ax.set_title("Injected row positions — should approximate uniform")
+    ax.set_title("Injected row positions, should approximate uniform")
     ax.legend()
     fig.savefig(str(figures_dir / "injection_position_uniformity.png"), bbox_inches="tight")
     plt.close(fig)
@@ -1043,7 +1043,7 @@ def run(force=False, sample=False):
     else:
         inj_log = pd.DataFrame()
     
-    # Write injection log (committed — small ground-truth)
+    # Write injection log (committed, small ground-truth)
     log_out = processed_dir / "injected_anomalies.csv"
     inj_log.to_csv(log_out, index=False)
 

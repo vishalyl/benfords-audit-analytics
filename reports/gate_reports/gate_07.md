@@ -1,92 +1,76 @@
-# Gate 07 — Validation Against Ground Truth
+# Gate 07: Validation Against Ground Truth
 
-**Stage:** 7 · **Date:** 2026-09-13 · **Gate:** `checks/gate_07.py` → **PASS**
+**Stage:** 7 · **Date:** 2026-09-13 (re-run at full population) · **Gate:** `checks/gate_07.py` -> **PASS**
 
 ## Outputs produced
 
 | File | Rows/size |
 |---|---|
-| `reports/metrics/model_metrics.json` | 5 models × ranking + binary metrics, per-type breakdown, caveats |
-| `data/dashboard/method_comparison.csv` | 40 rows (8 anomaly-type rows × 5 methods) |
+| `reports/metrics/model_metrics.json` | 5 models, ranking + binary metrics, per-type breakdown, caveats |
+| `data/dashboard/method_comparison.csv` | 40 rows (8 anomaly-type rows x 5 methods) |
 | `data/dashboard/pr_curve_points.csv`, `precision_at_k.csv` | thinned curves for Power BI / the web app |
 | `reports/figures/{pr_curve,roc_curve,precision_at_k,confusion_matrix,method_comparison_heatmap,threshold_sweep,score_by_type,recall_vs_effort}.png` | 8 figures, all >20 KB |
 
 ## Population
 
-Evaluated on the 50,000-row Stage 6 scored sample (4.9% of the 1,030,804-row cleaned
-population — Stage 6 ran in `--sample` mode; see `DECISIONS.md` D-0003). 802 of these
-rows (1.60%) are injected anomalies — close to the 1.5% design rate.
+Evaluated on the full 1,030,804-row cleaned population (resolves DECISIONS.md D-0003;
+see D-0007 for the full-population re-run and the LOF wiring bug it exposed). 16,874
+rows (1.637%) are injected anomalies, matching the Stage 3 injection design exactly.
 
 ## Headline metrics (all models)
 
-| Model | Average Precision | 95% CI | ROC-AUC | Precision | Recall | F1 | Alerts |
-|---|---|---|---|---|---|---|---|
-| Benford (segment, any) | — (binary only) | — | — | 0.016 | 0.928 | 0.031 | 46,458 |
-| Rules (any flag) | — (binary only) | — | — | 0.055 | 0.640 | 0.101 | 9,397 |
-| Isolation Forest | 0.1361 | [0.119, 0.157] | 0.714 | 0.316 | 0.296 | 0.305 | ~742 |
-| LOF | 0.0835 | [0.066, 0.104] | 0.630 | 0.151 | 0.141 | 0.146 | ~742 |
-| **Composite** | **0.1817** | **[0.160, 0.211]** | **0.734** | 0.305 | 0.286 | 0.295 | ~742 |
+| Model | Average Precision | 95% CI | ROC-AUC | Precision | Recall | F1 |
+|---|---|---|---|---|---|---|
+| Benford (segment, any) | (binary only) | | | 0.016 | 0.923 | 0.032 |
+| Rules (any flag) | (binary only) | | | 0.055 | 0.634 | 0.101 |
+| Isolation Forest | 0.1355 | [0.132, 0.140] | 0.719 | 0.301 | 0.276 | 0.288 |
+| LOF | 0.0550 | [0.049, 0.062] | 0.623 | 0.124 | 0.016 | 0.029 |
+| **Composite** | **0.1656** | **[0.160, 0.171]** | **0.736** | 0.310 | 0.284 | 0.297 |
 
-Baseline (random-guess) precision = anomaly rate = **0.0160**. Composite AP clears the
-baseline by ~11x and clears LOF and Isolation Forest individually — the blended score
-ranks better than any single unsupervised layer on its own.
+Baseline (random-guess) precision = anomaly rate = **0.0164**. Composite AP clears the
+baseline by ~10x and beats both individual unsupervised layers.
 
-## Precision / recall / lift @ k (composite score)
+**LOF note:** computed on its own 150,000-row (14.6%) coverage subsample, since LOF's
+neighbour search does not scale to ~1M rows (see DECISIONS.md D-0007). Its recall of
+0.016 reflects that coverage limit as much as model quality; ranking metrics
+(AP, ROC-AUC) are scoped to the subsample it actually scored.
 
-| k | Precision@k | Recall@k | Lift@k |
-|---|---|---|---|
-| 50 | see `model_metrics.json.models.composite.precision_at_k` | | |
-| 100–5000 | full table in `model_metrics.json` | | |
-
-## Operating point
-
-Threshold sweep on the composite score, F1-optimal: **threshold = 0.8099**, giving
-precision 0.386, recall 0.278, F1 0.323, 578 alerts (1.16% of the population reviewed).
-
-## The anomaly-type × method matrix (the project's central artefact)
+## The anomaly-type x method matrix (the project's central artefact)
 
 | Type | Benford | Rules | IForest | LOF | Composite |
 |---|---|---|---|---|---|
-| digit_fabrication | 89.2% | 46.9% | 0.9% | 17.1% | 0.0% |
-| duplicate | 92.6% | 27.5% | 2.7% | 4.0% | 3.4% |
-| extreme_outlier | 93.7% | 86.6% | 33.9% | 31.5% | 38.6% |
-| round_number | 95.3% | 100.0% | 71.7% | 13.4% | 70.1% |
-| threshold_avoidance | 93.1% | 100.0% | 61.0% | 18.9% | 53.5% |
-| timing | 92.3% | 18.6% | 0.8% | 0.8% | 0.8% |
-| **ALL_INJECTED** | 92.8% | 64.0% | 29.6% | 14.1% | 28.6% |
-| **REAL_ROWS** (false-positive rate) | 92.9% | 18.1% | 1.0% | 1.3% | 1.1% |
+| digit_fabrication | 93.6% | 46.8% | 0.9% | 5.8% | 0.0% |
+| duplicate | 92.4% | 27.4% | 2.7% | 1.0% | 3.5% |
+| extreme_outlier | 93.6% | 88.4% | 28.0% | 6.3% | 30.9% |
+| round_number | 95.2% | 100.0% | 74.1% | 3.8% | 68.6% |
+| threshold_avoidance | 92.9% | 100.0% | 62.9% | 4.9% | 51.8% |
+| timing | 92.7% | 18.6% | 0.8% | 0.4% | 0.5% |
+| **ALL_INJECTED** | 93.4% | 63.5% | 28.9% | 3.8% | 25.9% |
+| **REAL_ROWS** (false-positive rate) | 92.9% | 18.1% | 1.0% | 0.2% | 1.0% |
 
-## Honest interpretation (measured, not templated — see DECISIONS.md D-0004)
+## Honest interpretation (measured, not templated, see DECISIONS.md D-0004/D-0007)
 
-In this run, **rule-based checks are the strongest single layer** at a contamination-
-matched alert budget: they dominate every injected anomaly type, including
-`extreme_outlier` (86.6%), which the plan's template narrative expected Isolation Forest
-to own. The composite score still adds value — its Average Precision (0.182) beats
-every individual method, meaning it *ranks* transactions better even though its raw
-catch-rate at a fixed 1.5% alert budget trails the rules layer on several types.
+The finding from the 50k-sample run holds at full population, with a **larger margin**:
+rule-based checks beat Isolation Forest on every injected type, including
+`extreme_outlier` (88.4% vs 28.0%, a 60.4-point gap, up from 52.75 points at 50k). This
+is not a small-sample artefact. The composite score's Average Precision (0.166) still
+beats every individual method, meaning it ranks transactions better even though its raw
+catch-rate at a fixed alert budget trails rules on most types.
 
-**The segmented Benford flag is uninformative at row level in this run.** All 66
-(country, year_month) segments Stage 4 assessed were classified `NONCONFORMING`, so the
-flag fires on ~93% of *every* population — including 92.9% of genuinely real rows. It
-remains a legitimate population-level finding (worth reporting to an audit manager as
-"most large segments fail conformity testing"), but it cannot serve as a per-transaction
-review trigger until Stage 4's segment classification thresholds are revisited — noted
-as a limitation, not smoothed over.
+The segmented Benford flag remains uninformative at row level: it fires on ~93% of
+every population, real or injected, because all 66 assessed segments were classified
+NONCONFORMING in Stage 4. This is unchanged by the population size, since Stage 4 was
+not re-run.
 
-The master plan's complementarity assertion (gate check 6-7) is therefore reported as
-**WARN, not FAIL** — see `DECISIONS.md` D-0004 for the full reasoning. Re-tuning earlier
-stages to force the assertion to pass would mean tuning against the ground-truth labels,
-which the plan itself treats as a worse failure mode than an honest negative result.
-
-## DECISIONS.md entries added
-
-- D-0003 — evaluating on the 50k scored sample, not the full population.
-- D-0004 — complementarity assertion and Benford segment flag reported as found.
+The master plan's complementarity assertion (gate checks 6-7) is reported as **WARN**,
+consistent with D-0004: `rules_any_beats_iforest` on `extreme_outlier` by 60.4pp; no
+type shows IF beating rules by >=20pp (closest is `timing` at -14.9pp, i.e. rules still
+ahead there too, just by less).
 
 ## Bootstrap CI
 
-Composite AP 95% CI = [0.160, 0.211] via 200-resample bootstrap (seed 42), clears the
-0.016 baseline comfortably.
+Composite AP 95% CI = [0.160, 0.171] via 200-resample bootstrap (seed 42), comfortably
+clears the 0.0164 baseline.
 
-**GATE: PASS** (checks 6 and 7 downgraded to WARN, all others hard-pass; see
-`checks/gate_07.py` stdout above for the full check-by-check log).
+**GATE: PASS** (checks 6 and 7 remain WARN per DECISIONS.md D-0004, all other checks
+hard-pass).

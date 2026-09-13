@@ -1,4 +1,4 @@
-"""Stage 5 — Rule-based red flag detection for the fraud detection pipeline.
+"""Stage 5, Rule-based red flag detection for the fraud detection pipeline.
 
 Loads ``data/processed/transactions_labeled.parquet`` and applies 10
 heuristic rules to each row.  The result is written out with a new
@@ -9,7 +9,7 @@ Usage::
 
     python -m src.rules [--sample] [--force]
 
-All rules operate on raw data features only — ``is_synthetic_anomaly``
+All rules operate on raw data features only, ``is_synthetic_anomaly``
 and ``anomaly_type`` are never consulted during flagging.
 """
 from __future__ import annotations
@@ -297,7 +297,7 @@ def save_figures(df: pd.DataFrame) -> None:
 # ---------------------------------------------------------------------------
 
 def run(force: bool = False, sample: bool = False) -> None:
-    """Stage 5 entry point — rule-based flagging pipeline."""
+    """Stage 5 entry point, rule-based flagging pipeline."""
     logger = setup_logging("rules")
 
     with timed(logger, "stage5_rules"):

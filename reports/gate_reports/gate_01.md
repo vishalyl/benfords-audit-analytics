@@ -1,4 +1,4 @@
-# Stage 1 Gate Report — Ingestion & SQL Layer
+# Stage 1 Gate Report: Ingestion and SQL Layer
 Combined parquet rows: 1,067,371
 Sample parquet rows: 50,000
 SQLite rows: 1,067,371

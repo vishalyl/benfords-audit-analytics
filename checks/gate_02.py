@@ -1,4 +1,4 @@
-"""Stage 2 gate — Cleaning with full reconciliation."""
+"""Stage 2 gate, Cleaning with full reconciliation."""
 from __future__ import annotations
 
 import json
@@ -112,7 +112,7 @@ def main() -> int:
     report_path = REPO_ROOT / "reports/gate_reports/gate_02.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     md = []
-    md.append("# Stage 2 Gate Report — Cleaning\n\n")
+    md.append("# Stage 2 Gate Report: Cleaning\n\n")
     md.append(f"Rows in: {rows_in:,}\n")
     md.append(f"Rows out (cleaned): {rows_out:,}\n")
     md.append(f"Cancellations removed: {cancellations:,}\n")

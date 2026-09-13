@@ -1,11 +1,11 @@
-"""Stage 7 — Validation against ground truth.
+"""Stage 7, Validation against ground truth.
 
 Joins ground-truth labels with rule flags, Benford segment flags and model
 scores, then computes binary and ranking metrics, the anomaly-type x
 detection-method matrix, a threshold sweep and bootstrap confidence
 intervals.
 
-Framing (see plan/03_STAGES_7-9.md sec 7.1) — must be respected everywhere
+Framing (see plan/03_STAGES_7-9.md sec 7.1), must be respected everywhere
 this module's output is later quoted:
   1. Positives are ONLY the injected rows. A method that flags a genuine
      (unlabelled) anomaly in the real ledger is scored here as a false
@@ -77,10 +77,11 @@ CAVEATS = [
     "injection rate (contamination=0.015); in a real engagement the true "
     "anomaly rate is unknown and this threshold would have to be set by "
     "judgement or a fixed review-alert budget instead.",
-    "Isolation Forest and LOF were fit on a 50,000-row sample of the "
-    "1,030,804-row cleaned population (Stage 6 ran in --sample mode); "
-    "figures in this file describe detection performance on that sample, "
-    "not the full ledger.",
+    "Local Outlier Factor does not scale to the full population, so it is fit "
+    "and scored on a bounded random subsample only (see lof_in_subsample); its "
+    "ranking metrics (average precision, ROC-AUC) are computed on that subsample, "
+    "while its precision/recall/confusion figures span the full population, so "
+    "its recall is capped by coverage as well as by model quality.",
 ]
 
 
@@ -95,9 +96,9 @@ def load_evaluation_frame(
 ) -> pd.DataFrame:
     """Join ground truth + rule flags + model scores on ``txn_id``.
 
-    The join is inner on the three sources' ``txn_id`` sets. Because Stage 6
-    only scored a 50,000-row sample, the evaluation population is that
-    sample, not the full cleaned ledger — logged, not hidden.
+    The join is inner on the three sources' ``txn_id`` sets. If Stage 6 was
+    run with ``--sample``, the evaluation population is that sample rather
+    than the full cleaned ledger; this is logged either way, not hidden.
 
     Returns:
         DataFrame with one row per scored transaction carrying ground truth,
@@ -119,7 +120,7 @@ def load_evaluation_frame(
     for frame, tag in [(df_label, "label"), (df_flag, "flag"), (df_score, "score")]:
         dup = frame["txn_id"].duplicated().sum()
         if dup:
-            raise ValueError(f"{dup} duplicate txn_ids in {tag} source — join would not be 1:1")
+            raise ValueError(f"{dup} duplicate txn_ids in {tag} source, join would not be 1:1")
 
     id_label = df_label.set_index("txn_id")
     id_flag = df_flag.set_index("txn_id")
@@ -128,14 +129,17 @@ def load_evaluation_frame(
     common_ids = id_label.index.intersection(id_score.index).intersection(id_flag.index)
     n_total, n_after = len(id_label), len(common_ids)
     logger.info(
-        "Evaluation population: %d / %d labeled rows (%.1f%%) — Stage 6 scored a sample",
+        "Evaluation population: %d / %d labeled rows (%.1f%% coverage)",
         n_after, n_total, 100 * n_after / n_total,
     )
 
     ground_truth = id_label.loc[common_ids, ["is_synthetic_anomaly", "anomaly_type"]]
     passthrough = id_label.loc[common_ids, [c for c in PASSTHROUGH_COLS if c in id_label.columns]]
     rule_flags = id_flag.loc[common_ids, ["rule_flags"]]
-    scores = id_score.loc[common_ids, ["if_score", "lof_score"]]
+    score_cols = ["if_score", "lof_score"] + (["lof_in_subsample"] if "lof_in_subsample" in id_score.columns else [])
+    scores = id_score.loc[common_ids, score_cols]
+    if "lof_in_subsample" not in scores.columns:
+        scores = scores.assign(lof_in_subsample=True)  # older scored files: LOF ran on every row
 
     merged = pd.concat([ground_truth, passthrough, rule_flags, scores], axis=1).reset_index()
 
@@ -155,9 +159,10 @@ def load_evaluation_frame(
         bdf = bdf[(bdf["metric"] == "amount_first") & (bdf["classification"] == "NONCONFORMING")]
         bad_segments = set(zip(bdf["country"], bdf["year_month"]))
         if bad_segments:
-            merged["benford_flag"] = merged.apply(
-                lambda r: int((r["country"], r["year_month"]) in bad_segments), axis=1
-            )
+            # Vectorised membership test (was a per-row .apply, too slow at
+            # full-population scale of ~1M rows).
+            seg_keys = pd.Series(list(zip(merged["country"], merged["year_month"])), index=merged.index)
+            merged["benford_flag"] = seg_keys.isin(bad_segments).astype(int)
 
     # Assert no nulls in the score columns used by every downstream metric.
     assert merged[["if_score", "lof_score"]].isna().sum().sum() == 0, "nulls in score columns"
@@ -265,7 +270,7 @@ def per_type_detection(
 
     Returns:
         Tidy DataFrame with columns anomaly_type, method, n_rows, n_caught,
-        pct_caught — one row per (type, method) pair, plus ALL_INJECTED and
+        pct_caught, one row per (type, method) pair, plus ALL_INJECTED and
         REAL_ROWS sentinel rows. This is data/dashboard/method_comparison.csv.
     """
     types = [t for t in eval_df["anomaly_type"].unique() if t != "none"]
@@ -370,23 +375,25 @@ def _fig_pr_curve(models: dict[str, dict], baseline: float) -> plt.Figure:
     ax.axhline(baseline, color=PALETTE["neutral"], linestyle="--", label=f"Random baseline ({baseline:.4f})")
     ax.set_xlabel("Recall")
     ax.set_ylabel("Precision")
-    ax.set_title("Precision-Recall — all models")
+    ax.set_title("Precision-Recall, all models")
     ax.legend(fontsize=9)
     fig.tight_layout()
     return fig
 
 
-def _fig_roc_curve(y_true: np.ndarray, scores: dict[str, np.ndarray]) -> plt.Figure:
+def _fig_roc_curve(series: dict[str, tuple[np.ndarray, np.ndarray]]) -> plt.Figure:
+    """series: {method_name: (y_true, score)} -- each method may use a different
+    y_true, since LOF is only evaluated on the rows it actually scored."""
     fig, ax = plt.subplots(figsize=FIGSIZE)
     colors = [PALETTE["primary"], PALETTE["risk"], PALETTE["good"]]
-    for (name, sc), color in zip(scores.items(), colors):
-        fpr, tpr, _ = roc_curve(y_true, sc)
-        auc = roc_auc_score(y_true, sc)
+    for (name, (yt, sc)), color in zip(series.items(), colors):
+        fpr, tpr, _ = roc_curve(yt, sc)
+        auc = roc_auc_score(yt, sc)
         ax.plot(fpr, tpr, label=f"{name} (AUC={auc:.3f})", color=color, linewidth=2)
     ax.plot([0, 1], [0, 1], "--", color=PALETTE["neutral"])
     ax.set_xlabel("False positive rate")
     ax.set_ylabel("True positive rate")
-    ax.set_title("ROC — optimistic under heavy class imbalance; see caveats")
+    ax.set_title("ROC curve (optimistic under heavy class imbalance, see caveats)")
     ax.legend(fontsize=9)
     fig.tight_layout()
     return fig
@@ -404,7 +411,7 @@ def _fig_precision_at_k(models: dict[str, dict]) -> plt.Figure:
     ax.set_xscale("log")
     ax.set_xlabel("k (transactions reviewed, log scale)")
     ax.set_ylabel("Precision@k")
-    ax.set_title("Precision@k — the audit-relevant curve")
+    ax.set_title("Precision@k, the audit-relevant curve")
     ax.legend(fontsize=9)
     fig.tight_layout()
     return fig
@@ -454,7 +461,7 @@ def _fig_threshold_sweep(sweep: pd.DataFrame, opt: float) -> plt.Figure:
     ax2 = ax1.twinx()
     ax2.plot(sweep["threshold"], sweep["alert_count"], color=PALETTE["warning"], alpha=0.4, label="Alert count")
     ax2.set_ylabel("Alert count")
-    ax1.set_title("Threshold sweep — composite risk score")
+    ax1.set_title("Threshold sweep, composite risk score")
     ax1.legend(loc="upper right", fontsize=9)
     fig.tight_layout()
     return fig
@@ -516,17 +523,25 @@ def run(sample: bool = False) -> dict[str, Any]:
         eval_df["composite_risk"] = compute_composite(eval_df)
 
         # --- Method scores / binary decisions ---
+        # LOF only ever scores a bounded subsample of the population (it does not
+        # scale to ~1M rows); rows outside it get a hard 0.0, which is NOT a real
+        # "normal" verdict. Every LOF calculation below is therefore scoped to
+        # lof_in_subsample==True so a coverage limit is never mistaken for a
+        # quality result -- see the caveats list and DECISIONS.md.
+        lof_mask = eval_df["lof_in_subsample"].astype(bool)
+        lof_coverage = float(lof_mask.mean())
+
         contamination = float(cfg.model.contamination_primary)
         pct = 1 - contamination
         if_thresh = float(np.quantile(eval_df["if_score"], pct))
-        lof_thresh = float(np.quantile(eval_df["lof_score"], pct))
+        lof_thresh = float(np.quantile(eval_df.loc[lof_mask, "lof_score"], pct)) if lof_mask.any() else 1.0
         comp_thresh = float(np.quantile(eval_df["composite_risk"], pct))
 
         method_binary = {
             "benford_any": eval_df["benford_flag"].astype(int),
             "rules_any": (eval_df["rule_flag_count"] >= 1).astype(int),
             "iforest": (eval_df["if_score"] >= if_thresh).astype(int),
-            "lof": (eval_df["lof_score"] >= lof_thresh).astype(int),
+            "lof": (lof_mask & (eval_df["lof_score"] >= lof_thresh)).astype(int),
             "composite": (eval_df["composite_risk"] >= comp_thresh).astype(int),
         }
 
@@ -541,10 +556,18 @@ def run(sample: bool = False) -> dict[str, Any]:
             ("lof", "lof_score", lof_thresh),
             ("composite", "composite_risk", comp_thresh),
         ]:
-            score = eval_df[score_col].values
-            rk = ranking_metrics(y_true, score)
+            if name == "lof":
+                # Ranking quality is measured only on the rows LOF actually scored;
+                # the binary confusion matrix still spans the full population, so
+                # its recall correctly reflects the real-world coverage limit.
+                score = eval_df.loc[lof_mask, "lof_score"].values
+                y_true_m = eval_df.loc[lof_mask, "is_synthetic_anomaly"].values
+            else:
+                score = eval_df[score_col].values
+                y_true_m = y_true
+            rk = ranking_metrics(y_true_m, score)
             pr_curve = rk.pop("precision_recall_curve")
-            point, lo, hi = bootstrap_ci(y_true, score)
+            point, lo, hi = bootstrap_ci(y_true_m, score)
             bm = binary_metrics(y_true, method_binary[name].values)
             models[name] = {
                 **rk, "_pr_curve": pr_curve,
@@ -553,6 +576,14 @@ def run(sample: bool = False) -> dict[str, Any]:
                 **{k: v for k, v in bm.items() if k in ("precision", "recall", "f1")},
                 "confusion": {k: bm[k] for k in ("tp", "fp", "tn", "fn")},
             }
+            if name == "lof":
+                models[name]["note"] = (
+                    f"Computed on a {int(lof_mask.sum()):,}-row stratified subsample "
+                    f"({lof_coverage*100:.1f}% of the scored population); ranking metrics "
+                    "(average_precision, roc_auc, precision_at_k) are scoped to that "
+                    "subsample, but precision/recall/confusion span the full population, "
+                    "so recall is capped by coverage, not just model quality."
+                )
 
         # --- per-type detection matrix (long format) ---
         method_matrix_long = per_type_detection(eval_df, method_binary)
@@ -631,9 +662,11 @@ def run(sample: bool = False) -> dict[str, Any]:
         setup_style()
         save_fig(_fig_pr_curve({k: v for k, v in models.items() if "_pr_curve" in v}, output["baseline_precision"]),
                   "pr_curve.png", category="validation")
-        save_fig(_fig_roc_curve(y_true, {"iforest": eval_df["if_score"].values, "lof": eval_df["lof_score"].values,
-                                          "composite": eval_df["composite_risk"].values}),
-                  "roc_curve.png", category="validation")
+        save_fig(_fig_roc_curve({
+            "iforest": (y_true, eval_df["if_score"].values),
+            "lof": (eval_df.loc[lof_mask, "is_synthetic_anomaly"].values, eval_df.loc[lof_mask, "lof_score"].values),
+            "composite": (y_true, eval_df["composite_risk"].values),
+        }), "roc_curve.png", category="validation")
         save_fig(_fig_precision_at_k({k: v for k, v in models.items() if "precision_at_k" in v}),
                   "precision_at_k.png", category="validation")
         save_fig(_fig_confusion(y_true, method_binary["composite"].values, "Composite risk @ contamination threshold"),

@@ -1,4 +1,4 @@
-"""Stage 6 — Unsupervised anomaly scoring (Isolation Forest + LOF).
+"""Stage 6, Unsupervised anomaly scoring (Isolation Forest + LOF).
 
 Loads ``data/processed/transactions_flagged.parquet``, trains an
 IsolationForest on a 50 % random sample and computes Local Outlier
@@ -45,7 +45,7 @@ OUTPUT_PATH = cfg.paths.processed_dir / "transactions_scored.parquet"
 COLOR_REAL = "#4A90D9"
 COLOR_FLAGGED = "#D94A4A"
 
-# Feature columns — leakage-safe, deterministic set
+# Feature columns, leakage-safe, deterministic set
 FEATURE_COLS = [
     "amount",
     "quantity",
@@ -106,21 +106,30 @@ def _train_iforest(X: np.ndarray) -> tuple[IsolationForest, np.ndarray]:
     return model, _normalise(anomaly_scores)
 
 
-def _compute_lof(X: np.ndarray) -> np.ndarray:
-    """Compute LOF scores on the full dataset.
+def _compute_lof(X: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Compute LOF scores on a bounded subsample of the input.
 
-    Uses subsampling to stay within memory bounds for ~1M rows.
-    Returns the normalised anomaly scores (0-1).
+    LOF's O(n log n) neighbour search does not scale to ~1M rows, so above
+    ``cfg.model.lof_subsample_n`` rows a random subsample is scored instead
+    and every other row gets score 0.0 with ``in_subsample=False`` -- 0.0 is
+    the minimum of the normalised range, so it never masquerades as a real
+    (non-)anomalous score; downstream code must gate on ``in_subsample``
+    before using ``lof_score`` for any row, and gate_08/model_metrics.json's
+    caveats say so explicitly.
+
+    Returns:
+        (lof_score_full, in_subsample_full), both length len(X).
     """
+    n = len(X)
     max_subsample = cfg.model.lof_subsample_n
-    if len(X) > max_subsample:
-        logger.info("LOF subsampling %d -> %d rows", len(X), max_subsample)
-        idx = np.arange(len(X))
+    in_subsample = np.ones(n, dtype=bool)
+    if n > max_subsample:
+        logger.info("LOF subsampling %d -> %d rows", n, max_subsample)
         rng = np.random.RandomState(cfg.project.seed)
-        sample_idx = rng.choice(idx, size=max_subsample, replace=False)
-        X_fit = X[sample_idx]
-    else:
-        X_fit = X
+        sample_idx = rng.choice(np.arange(n), size=max_subsample, replace=False)
+        in_subsample = np.zeros(n, dtype=bool)
+        in_subsample[sample_idx] = True
+    X_fit = X[in_subsample]
 
     lof = LocalOutlierFactor(
         n_neighbors=cfg.model.lof_n_neighbors,
@@ -134,8 +143,11 @@ def _compute_lof(X: np.ndarray) -> np.ndarray:
     raw_scores = -lof.negative_outlier_factor_
     normalised = _normalise(raw_scores)
 
-    logger.info("LOF computed for %d rows", len(normalised))
-    return normalised
+    scores_full = np.zeros(n)
+    scores_full[in_subsample] = normalised
+
+    logger.info("LOF computed for %d / %d rows", len(normalised), n)
+    return scores_full, in_subsample
 
 
 # ---------------------------------------------------------------------------
@@ -296,7 +308,7 @@ def _build_features(
 
 
 def run(force: bool = False, sample: bool = False) -> None:
-    """Stage 6 entry point — unsupervised anomaly scoring pipeline."""
+    """Stage 6 entry point, unsupervised anomaly scoring pipeline."""
     logger = setup_logging("models")
 
     with timed(logger, "stage6_models"):
@@ -325,7 +337,7 @@ def run(force: bool = False, sample: bool = False) -> None:
             if feat_df[col].dtype == "float64":
                 feat_df[col] = feat_df[col].astype("float32")
 
-        # Clean rows with NaN — models can't handle missing values
+        # Clean rows with NaN, models can't handle missing values
         clean_mask = ~nan_mask
         X_clean = feat_df.loc[clean_mask].values.astype(np.float64)
         X_full = feat_df.values.astype(np.float64)  # original order, with NaNs
@@ -336,14 +348,16 @@ def run(force: bool = False, sample: bool = False) -> None:
         # --- Isolation Forest (train on clean data) ---
         if_model, if_scores = _train_iforest(X_clean)
 
-        # --- LOF (fit on clean data, score all) ---
-        lof_scores = _compute_lof(X_clean)
+        # --- LOF (fit on a bounded subsample of clean data, score that subsample) ---
+        lof_scores, lof_in_subsample = _compute_lof(X_clean)
 
         # --- Pad NaN rows with zeros so arrays stay aligned ---
         if_scores_full = np.zeros(len(df))
         lof_scores_full = np.zeros(len(df))
+        lof_in_subsample_full = np.zeros(len(df), dtype=bool)
         if_scores_full[clean_mask] = if_scores
         lof_scores_full[clean_mask] = lof_scores
+        lof_in_subsample_full[clean_mask] = lof_in_subsample
 
         # --- Composite risk ---
         risk_scores = _composite_score(
@@ -355,6 +369,7 @@ def run(force: bool = False, sample: bool = False) -> None:
         out = df.copy()
         out["if_score"] = if_scores_full
         out["lof_score"] = lof_scores_full
+        out["lof_in_subsample"] = lof_in_subsample_full
         out["risk_score"] = risk_scores
         out["risk_tier"] = risk_tiers
 

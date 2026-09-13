@@ -1,4 +1,4 @@
-"""Stage 1 — mirror the raw combined frame into SQLite and run the showcase queries."""
+"""Stage 1, mirror the raw combined frame into SQLite and run the showcase queries."""
 from __future__ import annotations
 
 import argparse

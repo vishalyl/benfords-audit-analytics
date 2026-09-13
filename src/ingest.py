@@ -1,4 +1,4 @@
-"""Stage 0/1 — acquire the raw workbook, load, combine, downcast, profile, sample."""
+"""Stage 0/1, acquire the raw workbook, load, combine, downcast, profile, sample."""
 from __future__ import annotations
 
 import argparse

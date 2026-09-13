@@ -1,4 +1,4 @@
-# Stage 0 Gate Report — Environment Bootstrap
+# Stage 0 Gate Report: Environment Bootstrap
 
 Python version: `3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]`
 

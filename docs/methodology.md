@@ -1,8 +1,8 @@
 # Methodology
 
-Technical reference for `benfords-audit-analytics`. This is the long-form account —
+Technical reference for `benfords-audit-analytics`. This is the long-form account, 
 every formula, every threshold with its source, every pre-registered decision, and the
-judgement-call log — for a reviewer who wants to verify the work rather than take the
+judgement-call log, for a reviewer who wants to verify the work rather than take the
 README's word for it.
 
 ## 1. Dataset
@@ -18,20 +18,20 @@ Every row removed is counted in `reports/metrics/cleaning_ledger.json`; the pipe
 asserts `rows_in == rows_out + sum(removed)`. Pre-registered decisions (`DECISIONS.md`
 "Pre-registered defaults"):
 
-- **PD-01** — missing `customer_id` retained as `"UNASSIGNED"`, excluded only from
+- **PD-01**, missing `customer_id` retained as `"UNASSIGNED"`, excluded only from
   customer-level z-score features (which get `has_customer_stats = False`, not dropped).
-- **PD-02** — cancellations (`invoice` starts with `C`) moved to a separate frame,
+- **PD-02**, cancellations (`invoice` starts with `C`) moved to a separate frame,
   excluded from Benford and the model population, but counted and reported.
-- **PD-03** — the Benford population is non-cancelled, non-adjustment rows with
+- **PD-03**, the Benford population is non-cancelled, non-adjustment rows with
   `amount >= 1.00`.
-- **PD-04** — zero/negative-amount rows retained, flagged `is_nonpositive_amount`,
+- **PD-04**, zero/negative-amount rows retained, flagged `is_nonpositive_amount`,
   excluded from Benford only.
-- **PD-05** — duplicate-candidate window: same `customer_id`, same rounded `amount`
+- **PD-05**, duplicate-candidate window: same `customer_id`, same rounded `amount`
   (2dp), `invoice_date` within ±1 day, different `invoice`.
 
 ## 3. Synthetic anomaly injection (Stage 3)
 
-Real audit engagement data is confidential and unlabelled — there is no way to measure
+Real audit engagement data is confidential and unlabelled, there is no way to measure
 precision/recall against it. A controlled set of anomalies is injected instead, at
 **1.5% of the cleaned population (PD-06)**, split across six archetypes:
 
@@ -64,12 +64,12 @@ For a population of amounts, the leading digit *d* should occur with probability
   independent and is the primary conformity criterion.**
 - **Chi-square** is reported alongside, with an explicit caveat: at the population
   sizes here (n ~ 10^5-10^6), chi-square rejects conformity for deviations of no
-  practical significance (the "excess power" problem — `plan/00_MASTER_PLAN.md` Risk
+  practical significance (the "excess power" problem, `plan/00_MASTER_PLAN.md` Risk
   R3). It is informative, not decisive.
 
 Segments smaller than **1,000 rows (PD-08)** get verdict `INSUFFICIENT_DATA`, never a
 false conformity/nonconformity call on too little data. Segmentation dimension actually
-implemented: combined `(country, year_month)` — see `DECISIONS.md` D-0003/D-0004 for the
+implemented: combined `(country, year_month)`, see `DECISIONS.md` D-0003/D-0004 for the
 finding that all 66 segments large enough to test were classified NONCONFORMING in this
 run, and what that does and does not mean.
 
@@ -78,20 +78,20 @@ run, and what that does and does not mean.
 Ten deterministic tests (`src/rules.py`): `DUPLICATE_INVOICE`, `SPLIT_AMOUNT`,
 `LARGE_AMOUNT`, `ROUND_NUMBER`, `ROUND_DOLLARS`, `HIGH_QUANTITY`, `ODD_QUANTITY`,
 `OFF_HOUR`, `NEGATIVE_ADJUSTMENT`, `ZERO_QUANTITY`. Business hours default
-07:00-19:59 all days (**PD-12** — Sunday is a live trading day in this dataset and is
+07:00-19:59 all days (**PD-12**, Sunday is a live trading day in this dataset and is
 *not* treated as off-hours), empirically checked against the hour-of-day histogram
 (`reports/figures/hour_distribution.png`) per `plan/00_MASTER_PLAN.md` sec 2.7.
 
 ## 6. Isolation Forest / LOF (Stage 6)
 
 Leakage-safe feature set: `amount, quantity, price, hour, day_of_week, cust_txn_count,
-cust_amount_mean, cust_amount_std, rule_flag_count` — explicitly excludes
+cust_amount_mean, cust_amount_std, rule_flag_count`, explicitly excludes
 `is_synthetic_anomaly`, `anomaly_type`, `txn_id`. IsolationForest
 (`n_estimators=200, max_samples=256`) and LOF (`n_neighbors=20`) scores are min-max
 normalised to `[0,1]`, higher = more anomalous.
 
 **Known constraint (`DECISIONS.md` D-0003):** this run scored a 50,000-row sample of
-the 1,030,804-row cleaned population, one feature set, one contamination level — not
+the 1,030,804-row cleaned population, one feature set, one contamination level, not
 the full-population FS-A/FS-B x 4-contamination grid the master plan specifies. Every
 population figure from Stage 7 onward is computed on n=50,000 and this is disclosed
 everywhere the population size is quoted.
@@ -100,7 +100,7 @@ everywhere the population size is quoted.
 
 **Framing that must not be lost:** positives are *only* the injected rows. A method
 that correctly flags a genuine, unlabelled anomaly already in the real ledger is scored
-here as a false positive — so **every precision figure is a lower bound**. Recall is
+here as a false positive, so **every precision figure is a lower bound**. Recall is
 trustworthy (it is measured against a complete, known positive set); precision is not.
 
 Ranking metrics lead: **Average Precision** (`sklearn.metrics.average_precision_score`)
@@ -109,12 +109,12 @@ bootstrap 95% CI on AP. Binary confusion-matrix metrics at a contamination-consi
 threshold (98.5th percentile, matching the 1.5% injection rate) are secondary.
 
 **The anomaly-type x detection-method matrix** (`data/dashboard/method_comparison.csv`)
-is the project's central artefact — it empirically tests whether the three layers catch
+is the project's central artefact, it empirically tests whether the three layers catch
 *different* classes of manipulation. In this run they do not cleanly split along the
 plan's template lines: rule-based checks dominate raw catch-rate on every injected type
 at the matched alert budget, and the segmented Benford flag over-triggers (fires on
 ~93% of every population, real or injected, because all 66 assessed segments were
-NONCONFORMING). This is reported as found — see `DECISIONS.md` D-0004 — rather than
+NONCONFORMING). This is reported as found, see `DECISIONS.md` D-0004, rather than
 tuned until it matches the expected narrative, which the master plan itself calls a
 worse failure mode (sec 8.1.2's honesty note, applied here by extension).
 
@@ -128,13 +128,13 @@ benford_component  = 1.0 if segment is NONCONFORMING else 0.0
 composite_risk = 0.50 * if_component + 0.30 * rules_component + 0.20 * benford_component
 ```
 
-Weights (**PD-11**) are set a priori by audit judgement — not tuned against the ground
+Weights (**PD-11**) are set a priori by audit judgement, not tuned against the ground
 truth. A 5-variant weight-sensitivity table (IF-heavy, Rules-heavy, Equal, No-Benford)
 is reported as a robustness check in `reports/metrics/composite_summary.json`; the
 Primary weighting is kept as the headline even where another variant scores marginally
 higher, and this is disclosed rather than hidden (plan sec 8.1.2).
 
-Risk bands: CRITICAL >=0.80, HIGH 0.60-0.80, MEDIUM 0.40-0.60, LOW <0.40 — a
+Risk bands: CRITICAL >=0.80, HIGH 0.60-0.80, MEDIUM 0.40-0.60, LOW <0.40, a
 presentation device over the continuous score, which is what actually ranks the review
 queue.
 

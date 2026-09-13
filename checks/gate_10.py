@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-"""Gate 10 — Public web dashboard (Stage 10).
+"""Gate 10: Public web dashboard (Stage 10).
 
 Automated checks per plan/04_STAGES_10-13.md sec 10.8. The live-URL check
 (#6) is recorded manually in the gate report since deploying to Streamlit
-Community Cloud requires an interactive GitHub OAuth click — see
+Community Cloud requires an interactive GitHub OAuth click, see
 DECISIONS.md D-0002 for the static-fallback plan that avoids that step.
 """
 from __future__ import annotations

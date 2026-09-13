@@ -1,8 +1,8 @@
-"""Stage 8 — Composite risk score, risk banding, and weight sensitivity.
+"""Stage 8, Composite risk score, risk banding, and weight sensitivity.
 
 Single implementation of the composite score, imported by both Stage 7
 (``src.validate``, for the "composite" column of the detection matrix) and
-Stage 8's own export step — see plan/03_STAGES_7-9.md sec 7.3 note and 8.2.
+Stage 8's own export step, see plan/03_STAGES_7-9.md sec 7.3 note and 8.2.
 
     composite_risk = 0.50 * percentile_rank(if_score)
                    + 0.30 * (rule_flag_count / 5)
@@ -82,7 +82,7 @@ def compute_composite(df: pd.DataFrame, weights: dict[str, float] | None = None)
             to sum to 1 before use. Defaults to config.yaml composite.*.
 
     Returns:
-        Series in [0, 1], no nulls — asserted before return.
+        Series in [0, 1], no nulls, asserted before return.
     """
     w = weights or {
         "if": float(cfg.composite.weight_if),
@@ -137,7 +137,7 @@ def weight_sensitivity(
 
 
 def _suggested_procedure(rule_flags: Any, benford_flag: int, if_pct: float) -> str:
-    """Map the dominant signal on a row to an audit procedure — plan sec 8.4."""
+    """Map the dominant signal on a row to an audit procedure, plan sec 8.4."""
     if isinstance(rule_flags, (list, np.ndarray)) and len(rule_flags):
         flags = set(rule_flags)
         for key, text in _PROCEDURE_MAP:
@@ -177,7 +177,7 @@ def top_risk_list(df: pd.DataFrame, n: int) -> pd.DataFrame:
 # ===================================================================
 
 def run(sample: bool = False) -> dict[str, Any]:
-    """Stage 8 entry point — composite score, banding, weight sensitivity, review list."""
+    """Stage 8 entry point, composite score, banding, weight sensitivity, review list."""
     logger = setup_logging("composite")
 
     with timed(logger, "stage8_composite"):
@@ -193,7 +193,7 @@ def run(sample: bool = False) -> dict[str, Any]:
         df["composite_risk"] = compute_composite(df)
         df["risk_band"] = assign_band(df["composite_risk"])
         df["risk_rank"] = df["composite_risk"].rank(method="first", ascending=False).astype(int)
-        df["if_pct"] = df["if_score"].rank(pct=True)
+        df["if_pct"] = df["if_score"].rank(pct=True).round(6)
 
         band_counts = df["risk_band"].value_counts().reindex(BAND_LABELS, fill_value=0).to_dict()
 

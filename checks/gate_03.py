@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Gate 03 — Validate synthetic anomaly injection (Stage 3).
+"""Gate 03, Validate synthetic anomaly injection (Stage 3).
 
 Checks:
   - Labeled dataset exists and has correct row counts

@@ -10,21 +10,21 @@
     "cust_amount_std"
   ],
   "n_feature_columns": 8,
-  "total_rows": 50000,
-  "rows_with_nan": 11485,
-  "n_flagged_rows": 9397,
-  "risk_score_mean": 0.058898,
-  "risk_score_std": 0.078158,
+  "total_rows": 1030804,
+  "rows_with_nan": 237598,
+  "n_flagged_rows": 194792,
+  "risk_score_mean": 0.058596,
+  "risk_score_std": 0.078401,
   "risk_score_min": 0.0,
-  "risk_score_max": 0.740613,
-  "if_score_mean": 0.109132,
-  "lof_score_mean": 0.002005,
+  "risk_score_max": 0.684845,
+  "if_score_mean": 0.109627,
+  "lof_score_mean": 1.5e-05,
   "risk_tiers": {
-    "LOW": 46858,
-    "MEDIUM": 3051,
-    "HIGH": 91
+    "LOW": 965573,
+    "MEDIUM": 63518,
+    "HIGH": 1713
   },
-  "auc_roc": 0.784664,
+  "auc_roc": 0.785092,
   "parameters": {
     "n_estimators": 200,
     "max_samples": 256,

@@ -1,6 +1,6 @@
-"""Stage 12 — audit findings workpaper PDF, built programmatically with
+"""Stage 12: audit findings workpaper PDF, built programmatically with
 reportlab so it regenerates from reports/metrics/* whenever the pipeline
-reruns (plan sec 12.3 — "do not hand-write the PDF; it will drift from the
+reruns (plan sec 12.3: "do not hand-write the PDF; it will drift from the
 numbers").
 
 Tone rules (plan sec 12.2) are enforced by construction: this module never
@@ -38,7 +38,7 @@ DASHBOARD_DIR = cfg.paths.dashboard_dir
 FIGURES_DIR = cfg.paths.figures_dir
 OUT_PATH = REPO_ROOT / "reports" / "audit_findings_workpaper.pdf"
 
-ENGAGEMENT_NAME = "Online Retail II — Transaction Anomaly Review"
+ENGAGEMENT_NAME = "Online Retail II: Transaction Anomaly Review"
 WORKPAPER_REF = "AA-BEN-01"
 PREPARED_BY = "Y.L. Vishal (Analytics)"
 REVIEWED_BY = "[pending engagement review]"
@@ -53,7 +53,7 @@ def _load_json(path: Path) -> dict:
 
 
 class NumberedCanvas(canvas_module.Canvas):
-    """Buffers pages so the footer can print 'page X of Y' — standard reportlab recipe."""
+    """Buffers pages so the footer can print 'page X of Y', standard reportlab recipe."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -139,7 +139,7 @@ def build_story(styles: dict) -> list:
 
     story: list = []
 
-    # ---------------- Page 1 — Executive summary ----------------
+    # ---------------- Page 1: Executive summary ----------------
     story += _header_block(styles)
     story.append(Paragraph("1. Executive Summary", styles["H2"]))
     story.append(Paragraph(
@@ -152,7 +152,7 @@ def build_story(styles: dict) -> list:
         f"(£{kpi['total_value']:,.0f} total value) covering December 2009 to December 2011. "
         f"{cleaning['cancellations']:,} cancellation entries and non-product ledger adjustments "
         f"were identified and excluded from digit-distribution and model-based testing, but are "
-        f"retained in the dataset and counted separately — they are not deleted from the "
+        f"retained in the dataset and counted separately; they are not deleted from the "
         f"population under review.", styles["Body"]))
     story.append(Paragraph(
         "<b>Procedures performed.</b> (i) Digit-distribution analysis (Benford's Law), aggregate "
@@ -183,11 +183,11 @@ def build_story(styles: dict) -> list:
         f"not, of themselves, evidence misstatement or fraud. A synthetic validation exercise "
         f"(sec. 2) indicates the composite ranking concentrates known anomalies well above the "
         f"rate expected from random selection, but every precision figure quoted in this workpaper "
-        f"is a lower bound — see the limitations in sec. 2.", styles["Body"]))
+        f"is a lower bound; see the limitations in sec. 2.", styles["Body"]))
 
     story.append(PageBreak())
 
-    # ---------------- Page 2 — Scope, data and limitations ----------------
+    # ---------------- Page 2: Scope, data and limitations ----------------
     story.append(Paragraph("2. Scope, Data and Limitations", styles["H2"]))
     story.append(Paragraph("Population reconciliation", styles["H2"]))
     recon = Table(
@@ -206,7 +206,7 @@ def build_story(styles: dict) -> list:
     story.append(Spacer(1, 8))
     story.append(Paragraph(
         f"Reconciliation holds: raw rows less exclusions equals the cleaned population "
-        f"(reconciles = {cleaning['reconciles']}). No row was silently dropped — every "
+        f"(reconciles = {cleaning['reconciles']}). No row was silently dropped; every "
         f"exclusion is counted above and retained in the underlying dataset for inspection.",
         styles["Body"]))
 
@@ -248,13 +248,13 @@ def build_story(styles: dict) -> list:
 
     story.append(PageBreak())
 
-    # ---------------- Page 3 — Benford's Law ----------------
+    # ---------------- Page 3: Benford's Law ----------------
     story.append(Paragraph("3. Digit-Distribution Analysis (Benford's Law)", styles["H2"]))
     story.append(Paragraph(
         "<b>Method.</b> Benford's Law states that the leading digit of many naturally occurring "
         "numeric populations follows log10(1 + 1/d), not a uniform distribution. Conformity is "
-        "assessed primarily via <b>Mean Absolute Deviation (MAD)</b> — the mean absolute "
-        "difference between observed and expected digit proportions — using Nigrini's thresholds "
+        "assessed primarily via <b>Mean Absolute Deviation (MAD)</b>, the mean absolute "
+        "difference between observed and expected digit proportions, using Nigrini's thresholds "
         "(Close &lt;0.006, Acceptable &lt;0.012, Marginal &lt;0.015, Nonconformity &ge;0.015; "
         "Nigrini, <i>Benford's Law: Applications for Forensic Accounting, Auditing, and Fraud "
         "Detection</i>, Wiley, 2012).", styles["Body"]))
@@ -270,7 +270,7 @@ def build_story(styles: dict) -> list:
 
     if (FIGURES_DIR / "benford_first_digit.png").exists():
         story.append(Image(str(FIGURES_DIR / "benford_first_digit.png"), width=140 * mm, height=80 * mm))
-        story.append(Paragraph("Figure 1 — Leading-digit distribution, aggregate population, observed vs. expected.", styles["Caption"]))
+        story.append(Paragraph("Figure 1: Leading-digit distribution, aggregate population, observed vs. expected.", styles["Caption"]))
 
     story.append(Paragraph(
         f"<b>Segment results.</b> {kpi['n_segments_assessed']} (country, calendar-month) segments "
@@ -284,24 +284,24 @@ def build_story(styles: dict) -> list:
     story.append(Spacer(1, 6))
     story.append(Paragraph(
         "<b>Finding.</b> Every segment large enough to test was classified nonconforming in this "
-        "review — this is itself a finding worth escalating (extend testing across the population "
+        "review. This is itself a finding worth escalating (extend testing across the population "
         "rather than a targeted subset), though it also means the segment flag alone did not "
         "differentiate individual transactions for review in this exercise (see sec. 5).",
         styles["Body"]))
 
     story.append(PageBreak())
 
-    # ---------------- Page 4 — Rule-based exception testing ----------------
+    # ---------------- Page 4: Rule-based exception testing ----------------
     story.append(Paragraph("4. Rule-Based Exception Testing", styles["H2"]))
     story.append(Paragraph(
         "Ten deterministic tests were applied, each with a stated audit rationale. Thresholds "
         "and exception counts:", styles["Body"]))
     rule_rationale = {
-        "DUPLICATE_INVOICE": "Same customer/amount/date, different invoice — duplicate billing risk",
-        "SPLIT_AMOUNT": "Amount just below an authorisation threshold — structuring risk",
-        "LARGE_AMOUNT": "Amount above a fixed high-value threshold — requires senior review",
-        "ROUND_NUMBER": "Amount is a round multiple (e.g. 1,000) — manual-entry indicator",
-        "ROUND_DOLLARS": "Amount has zero pence — manual-entry indicator",
+        "DUPLICATE_INVOICE": "Same customer/amount/date, different invoice: duplicate billing risk",
+        "SPLIT_AMOUNT": "Amount just below an authorisation threshold: structuring risk",
+        "LARGE_AMOUNT": "Amount above a fixed high-value threshold: requires senior review",
+        "ROUND_NUMBER": "Amount is a round multiple (e.g. 1,000): manual-entry indicator",
+        "ROUND_DOLLARS": "Amount has zero pence: manual-entry indicator",
         "HIGH_QUANTITY": "Quantity far above the customer's typical order size",
         "ODD_QUANTITY": "Quantity pattern inconsistent with normal ordering",
         "OFF_HOUR": "Posted outside business hours (07:00-19:59)",
@@ -322,23 +322,23 @@ def build_story(styles: dict) -> list:
         styles["Body"]))
     if (FIGURES_DIR / "rule_time_series.png").exists():
         story.append(Image(str(FIGURES_DIR / "rule_time_series.png"), width=140 * mm, height=75 * mm))
-        story.append(Paragraph("Figure 2 — Rule-flag activity over time.", styles["Caption"]))
+        story.append(Paragraph("Figure 2: Rule-flag activity over time.", styles["Caption"]))
 
     story.append(PageBreak())
 
-    # ---------------- Page 5 — Statistical outliers and combined results ----------------
+    # ---------------- Page 5: Statistical outliers and combined results ----------------
     story.append(Paragraph("5. Statistical Outlier Analysis and Combined Results", styles["H2"]))
     story.append(Paragraph(
         "An unsupervised algorithm (Isolation Forest) was used to score how easily each "
         "transaction can be separated from the rest of the population by its numeric attributes "
         "(amount, quantity, price, time of day, and the customer's historic transaction profile) "
-        "— transactions that separate in fewer steps receive a higher score.", styles["Body"]))
+        ", transactions that separate in fewer steps receive a higher score.", styles["Body"]))
     comp_m = mm_["models"]["composite"]
     story.append(Paragraph(
         f"<b>Validation results.</b> Against the labelled synthetic set, the composite score "
         f"achieved an Average Precision of {comp_m['average_precision']:.3f} (95% confidence "
         f"interval {comp_m['ap_ci95'][0]:.3f}-{comp_m['ap_ci95'][1]:.3f}) against a "
-        f"{mm_['baseline_precision']:.3f} baseline expected from random selection — a lower bound "
+        f"{mm_['baseline_precision']:.3f} baseline expected from random selection, a lower bound "
         f"on real-world precision, for the reasons given in sec. 2. This supports treating the "
         f"composite ranking as a reasonable basis for prioritising review effort; it does not, on "
         f"its own, support any conclusion about individual transactions without further enquiry.",
@@ -365,13 +365,13 @@ def build_story(styles: dict) -> list:
         story.append(Image(str(FIGURES_DIR / "recall_vs_effort.png"), width=140 * mm, height=80 * mm))
         p500 = mm_["models"]["composite"]["recall_at_k"]["500"]
         story.append(Paragraph(
-            f"Figure 3 — Reviewing the top 500 items surfaces {p500*100:.1f}% of the known "
+            f"Figure 3: Reviewing the top 500 items surfaces {p500*100:.1f}% of the known "
             f"synthetic exceptions, against a {mm_['baseline_precision']*500*100:.1f}% share "
             "expected from a random 500-item selection.", styles["Caption"]))
 
     story.append(PageBreak())
 
-    # ---------------- Page 6 — Schedule of items for review ----------------
+    # ---------------- Page 6: Schedule of items for review ----------------
     story.append(Paragraph("6. Schedule of Items for Review", styles["H2"]))
     story.append(Paragraph(
         "The following 25 transactions carry the highest composite risk scores in the scored "

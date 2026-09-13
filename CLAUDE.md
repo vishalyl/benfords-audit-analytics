@@ -1,4 +1,4 @@
-# Agent operating instructions — benfords-audit-analytics
+# Agent operating instructions, benfords-audit-analytics
 
 ## Before anything
 Read `plan/00_MASTER_PLAN.md` in full. Then read only the stage document you

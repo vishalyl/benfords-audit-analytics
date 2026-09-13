@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-"""Gate 11 — Notebooks, README, methodology and data dictionary (Stage 11).
+"""Gate 11: Notebooks, README, methodology and data dictionary (Stage 11).
 
 Checks adapted from plan/04_STAGES_10-13.md sec 11.5. Check 1's literal
 "every code cell has stored output" is relaxed to "every notebook has at
-least one code cell with stored output" — an import-only or variable-
+least one code cell with stored output" -- an import-only or variable-
 assignment cell legitimately produces none, and a notebook consisting only
 of such cells would still (correctly) fail this relaxed version.
 """
@@ -44,9 +44,9 @@ def check() -> tuple[bool, list[str]]:
         n_code_with_output = sum(1 for c in cells if c["cell_type"] == "code" and c.get("outputs"))
         ok = n_md >= 1 and n_code >= 1 and n_code_with_output >= 1
         if ok:
-            msgs.append(f"C1 PASS: {nb_name} — {n_md} md cells, {n_code} code cells, {n_code_with_output} with stored output")
+            msgs.append(f"C1 PASS: {nb_name}: {n_md} md cells, {n_code} code cells, {n_code_with_output} with stored output")
         else:
-            msgs.append(f"C1 FAIL: {nb_name} — md={n_md} code={n_code} with_output={n_code_with_output}")
+            msgs.append(f"C1 FAIL: {nb_name}: md={n_md} code={n_code} with_output={n_code_with_output}")
             passed = False
 
         banned_hits = []
@@ -58,11 +58,11 @@ def check() -> tuple[bool, list[str]]:
                 if re.search(pat, src):
                     banned_hits.append(pat)
         if banned_hits:
-            msgs.append(f"C2 FAIL: {nb_name} contains banned pattern(s) {banned_hits} — logic belongs in src/")
+            msgs.append(f"C2 FAIL: {nb_name} contains banned pattern(s) {banned_hits}, logic belongs in src/")
             passed = False
 
     if not any("C2 FAIL" in m for m in msgs):
-        msgs.append("C2 PASS: no notebook contains .fit(/to_csv(/iterrows( — logic stays in src/")
+        msgs.append("C2 PASS: no notebook contains .fit(/to_csv(/iterrows( -- logic stays in src/")
 
     # C3: README exists, >3000 chars, no placeholder tokens
     readme = Path("README.md")
@@ -88,7 +88,7 @@ def check() -> tuple[bool, list[str]]:
             msgs.append("C4 FAIL: README.md missing the <!-- generated --> marker (was src.report_fill run?)")
             passed = False
 
-        # C6: image links resolve (local paths only — remote badge images are exempt)
+        # C6: image links resolve (local paths only, remote badge images are exempt)
         all_img_links = re.findall(r"!\[[^\]]*\]\(([^)]+)\)", text)
         img_links = [l for l in all_img_links if not l.startswith(("http://", "https://"))]
         missing_imgs = [l for l in img_links if not Path(l).exists()]

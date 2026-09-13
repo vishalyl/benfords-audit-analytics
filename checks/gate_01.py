@@ -1,4 +1,4 @@
-"""Stage 1 gate — Ingestion & SQL layer."""
+"""Stage 1 gate, Ingestion & SQL layer."""
 from __future__ import annotations
 
 import logging
@@ -95,7 +95,7 @@ def main() -> int:
             if diff > 0.05:
                 ok = False
                 logger.warning("Country %s sample pct diff=%.4f > 0.02", c, diff)
-        # If a country is top5 in full but not in sample, diff is 100% — acceptable for small samples
+        # If a country is top5 in full but not in sample, diff is 100%, acceptable for small samples
     check(
         "sample country distribution within 2pp of full frame (top 5)",
         ok,
@@ -161,7 +161,7 @@ def main() -> int:
     report_path = REPO_ROOT / "reports/gate_reports/gate_01.md"
     report_path.parent.mkdir(parents=True, exist_ok=True)
     md = []
-    md.append("# Stage 1 Gate Report — Ingestion & SQL Layer\n")
+    md.append("# Stage 1 Gate Report: Ingestion and SQL Layer\n")
     md.append(f"Combined parquet rows: {len(df):,}\n")
     md.append(f"Sample parquet rows: {len(sample):,}\n")
     md.append(f"SQLite rows: {sql_count:,}\n")

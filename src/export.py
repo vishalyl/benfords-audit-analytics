@@ -1,19 +1,16 @@
-"""Stage 8 (export half) — dashboard data packs for Power BI and the web app.
+"""Stage 8 (export half), dashboard data packs for Power BI and the web app.
 
 Builds every file under ``data/dashboard/`` (committed, capped at 25 MB) plus
 ``data/processed/dashboard_export.parquet`` (git-ignored, full schema
-including the ground-truth columns — legitimate here because this is an
+including the ground-truth columns, legitimate here because this is an
 *evaluation* artefact, never a model input; see plan sec 8.3).
 
-Two populations are combined, and this is disclosed rather than hidden:
-  - Business / Benford aggregates (monthly_trend, segment_heatmap,
-    benford_aggregate, benford_by_segment_digit) are computed from the FULL
-    cleaned ledger (1,030,804 rows) — no model score is required for these.
-  - Model / composite figures (dashboard_export, top_risk lists,
-    kpi_summary's AP/recall) describe the 50,000-row scored sample only,
-    because Stage 6 (Isolation Forest / LOF) ran in --sample mode. This
-    mirrors how an audit team would describe results from a test sample of
-    a larger population.
+Business/Benford aggregates (monthly_trend, segment_heatmap, benford_aggregate,
+benford_by_segment_digit) and model/composite figures (dashboard_export,
+top_risk lists, kpi_summary's AP/recall) both describe the full 1,030,804-row
+cleaned population by default (Stage 6 no longer requires --sample; see
+DECISIONS.md D-0007). If Stage 6 is ever re-run with --sample for quick
+iteration, the two populations diverge and that is logged, not hidden.
 
 Usage::
 
@@ -68,7 +65,7 @@ def second_digit(amount: pd.Series) -> pd.Series:
 
 
 # ===================================================================
-# Benford aggregate (9-row digit table) — data/dashboard/benford_aggregate.csv
+# Benford aggregate (9-row digit table), data/dashboard/benford_aggregate.csv
 # ===================================================================
 
 def build_benford_aggregate(benford_metrics_path: Path) -> pd.DataFrame:
@@ -107,7 +104,7 @@ def build_benford_segments(segments_csv: Path) -> tuple[pd.DataFrame, pd.DataFra
     """Reshape Stage 4's per-(country, year_month) table to the dashboard schema.
 
     Returns:
-        (segments_df, by_segment_digit_df) — segments_df has one row per
+        (segments_df, by_segment_digit_df), segments_df has one row per
         segment with segment_dim/segment_value/n/mad/verdict/chi2/chi2_p/
         max_dev_digit/is_flagged; by_segment_digit_df expands each segment
         into 9 rows (one per leading digit) for redrawing the chart per
@@ -141,7 +138,7 @@ def build_benford_segments(segments_csv: Path) -> tuple[pd.DataFrame, pd.DataFra
 
 
 # ===================================================================
-# Monthly trend & segment heatmap — full population, no model score needed
+# Monthly trend & segment heatmap, full population, no model score needed
 # ===================================================================
 
 def build_monthly_trend(flagged: pd.DataFrame) -> pd.DataFrame:
@@ -193,7 +190,7 @@ def build_segment_heatmap(flagged: pd.DataFrame, segments_df: pd.DataFrame) -> p
 
 
 # ===================================================================
-# dashboard_export — the scored-sample transaction-level export
+# dashboard_export, the scored-sample transaction-level export
 # ===================================================================
 
 EXPORT_COLUMNS = [
@@ -205,14 +202,14 @@ EXPORT_COLUMNS = [
     "is_adjustment", "is_nonpositive_amount", "has_customer_stats",
     "rule_flag_count", "rule_flag_names",
     "benford_flag_any",
-    "if_score", "lof_score", "if_pct",
+    "if_score", "lof_score", "lof_in_subsample", "if_pct",
     "composite_risk", "risk_band", "risk_rank",
     "is_synthetic_anomaly", "anomaly_type",
 ]
 
 
 def build_dashboard_export(scored_df: pd.DataFrame) -> pd.DataFrame:
-    """Full-schema export for the scored population — see EXPORT_COLUMNS."""
+    """Full-schema export for the scored population, see EXPORT_COLUMNS."""
     df = scored_df.copy()
     df["leading_digit"] = leading_digit(df["amount"])
     df["second_digit"] = second_digit(df["amount"])
@@ -278,7 +275,7 @@ def run() -> dict[str, Any]:
 
         # method_comparison.csv / model_metrics.json / pr_curve_points.csv /
         # precision_at_k.csv were already written to data/dashboard/ by
-        # src.validate.run() (Stage 7) — copy model_metrics.json alongside them
+        # src.validate.run() (Stage 7), copy model_metrics.json alongside them
         # for a self-contained dashboard folder.
         mm_src = cfg.paths.metrics_dir / "model_metrics.json"
         if mm_src.exists():

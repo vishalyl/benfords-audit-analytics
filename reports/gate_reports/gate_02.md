@@ -1,4 +1,4 @@
-# Stage 2 Gate Report — Cleaning
+# Stage 2 Gate Report: Cleaning
 
 Rows in: 1,067,371
 Rows out (cleaned): 1,013,930

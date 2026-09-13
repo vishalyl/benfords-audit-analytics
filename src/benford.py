@@ -380,7 +380,7 @@ def _plot_first_digit(df: pd.DataFrame, label: str = "amount",
 
     for ax, col, title in zip(
         axes, ["amount_first", "quantity_first"],
-        ["Amount — First Digit", "Quantity — First Digit"]
+        ["Amount, First Digit", "Quantity, First Digit"]
     ):
         row = df[df["metric"] == col]
         if row.empty:
