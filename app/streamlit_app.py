@@ -1,6 +1,6 @@
-"""Audit Analytics — public Streamlit dashboard (Stage 10).
+"""Audit Analytics: public Streamlit dashboard (Stage 10).
 
-Reads ONLY from the committed data/dashboard directory (capped at 25 MB) —
+Reads ONLY from the committed data/dashboard directory (capped at 25 MB),
 never from the git-ignored raw or intermediate pipeline output directories.
 Paths are resolved relative to the repo root so this works identically
 locally and on Streamlit Community Cloud.
@@ -51,7 +51,7 @@ def load_dashboard_data() -> dict:
     if missing:
         st.error(
             f"Missing dashboard data file(s): {missing}. These are produced by "
-            "`python -m src.export` (Stage 8) — re-run the pipeline and redeploy."
+            "`python -m src.export` (Stage 8). Re-run the pipeline and redeploy."
         )
         st.stop()
 
@@ -81,22 +81,23 @@ def _verdict_color(verdict: str) -> str:
 
 def main() -> None:
     st.set_page_config(
-        page_title="Audit Analytics — Transaction Anomaly Detection",
+        page_title="Audit Analytics: Transaction Anomaly Detection",
         page_icon="🔍", layout="wide",
     )
+    px.defaults.template = "plotly_dark"
     data = load_dashboard_data()
     kpi = data["kpi"]
     mm = data["model_metrics"]
 
-    st.title("🔍 Audit Analytics — Transaction Anomaly Detection")
+    st.title("🔍 Audit Analytics: Transaction Anomaly Detection")
     st.caption(
-        "Benford's Law · Rule-Based Red Flags · Isolation Forest — a layered detection "
+        "Benford's Law, rule-based red flags, and Isolation Forest: a layered detection "
         "pipeline over a real 1.03M-row UK online-retail sales ledger."
     )
     st.warning(
         "**Demonstration project.** A controlled set of synthetic anomalies "
         "(1.5% of rows, 6 fraud archetypes) was injected into a real public dataset "
-        "so detection accuracy could actually be measured — live audit data has no "
+        "so detection accuracy could actually be measured. Live audit data has no "
         "ground truth to score against. See the Limitations tab for details.",
         icon="ℹ️",
     )
@@ -144,7 +145,7 @@ def main() -> None:
         band_counts = top50["risk_band"].value_counts()
         fig3 = px.pie(names=band_counts.index, values=band_counts.values,
                       color=band_counts.index, color_discrete_map=BAND_COLORS,
-                      title="Risk band split — top 50 review list", hole=0.4)
+                      title="Risk band split, top 50 review list", hole=0.4)
         st.plotly_chart(fig3, width='stretch')
 
         with st.expander("What this shows, in plain English"):
@@ -205,7 +206,7 @@ def main() -> None:
         st.plotly_chart(fig4, width='stretch')
         st.caption(
             "Benford's Law says the leading digit of naturally occurring numeric populations "
-            "follows log10(1+1/d), not a uniform 1-in-9 split — deviation from that curve can "
+            "follows log10(1+1/d), not a uniform 1-in-9 split. Deviation from that curve can "
             "indicate fabricated or rounded figures."
         )
 
@@ -293,7 +294,7 @@ def main() -> None:
         top_countries = sh.groupby("country")["txn_count"].sum().nlargest(20).index
         grid = sh[sh["country"].isin(top_countries)].pivot(index="country", columns="year_month", values=value_col)
         fig = px.imshow(grid, color_continuous_scale="RdYlGn_r" if value_col == "pct_flagged" else "Reds",
-                        aspect="auto", title=f"Country x month — {metric_choice}")
+                        aspect="auto", title=f"Country x month: {metric_choice}")
         st.plotly_chart(fig, width='stretch')
 
         flagged_segs = data["benford_segments"][data["benford_segments"]["is_flagged"]].sort_values("mad", ascending=False)
@@ -302,7 +303,7 @@ def main() -> None:
     st.divider()
     st.caption(
         "Data: UCI Online Retail II (CC BY 4.0). Detection layers rank transactions for "
-        "review — they do not, on their own, evidence fraud or misstatement."
+        "review. They do not, on their own, evidence fraud or misstatement."
     )
 
 

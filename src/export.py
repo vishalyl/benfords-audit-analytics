@@ -249,6 +249,17 @@ def run() -> dict[str, Any]:
         logger.info("Wrote top_risk_transactions.csv (%d rows) and top_risk_5000.csv (%d rows)",
                     len(top50), len(top5000))
 
+        # --- rank_labels.json : the live in-browser re-scoring simulator's only input.
+        # Position i = whether the i-th highest composite_risk row is a real injected
+        # anomaly (1) or not (0). No other column is needed: precision/recall/lift at
+        # any review budget k is a prefix-sum lookup over this array in JS, and because
+        # it is the exact ranking Stage 7 validated, the numbers it produces at k=500
+        # match model_metrics.json's published Precision@500 exactly. ---
+        ranked = scored_df.sort_values("composite_risk", ascending=False)
+        rank_labels = ranked["is_synthetic_anomaly"].astype(int).tolist()
+        (DASHBOARD_DIR / "rank_labels.json").write_text(json.dumps(rank_labels, separators=(",", ":")))
+        logger.info("Wrote rank_labels.json (%d entries, %d positive)", len(rank_labels), sum(rank_labels))
+
         # --- Full-population business/Benford aggregates ---
         flagged = pd.read_parquet(FLAGGED_PATH)
 

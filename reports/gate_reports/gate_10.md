@@ -64,5 +64,53 @@ against the live public URL in a fresh headless browser session (not the local d
 server) — all KPI cards, both SVG charts, the method x anomaly-type matrix, the top-10
 table and the caveats list rendered correctly with zero console errors.
 
-**GATE: PASS** — all automated checks pass, and the live-URL manual check is now
+**GATE: PASS** (initial deploy) — all automated checks pass, and the live-URL manual check is now
 confirmed (previously recorded as pending user action per DECISIONS.md D-0001/D-0002).
+
+## Addendum, 2026-09-13: dark-theme redesign and live re-scoring simulator
+
+The user's own assessment of the first live version: "not impressive at all." Rebuilt
+`src/static_dashboard.py` and `docs/index.html` from scratch around a dark, clean-SaaS
+visual style (dark slate background, one accent color, system fonts, no external CDN,
+same dependency-free architecture that survived the CDN-blocking issue above), and
+applied the same dark theme to `app/streamlit_app.py` via `app/.streamlit/config.toml`
+plus `px.defaults.template = "plotly_dark"`.
+
+New content, none of it decorative:
+
+- **A live re-scoring simulator.** `src/export.py` now also writes
+  `data/dashboard/rank_labels.json` (50,000 entries, one 0/1 per transaction in
+  composite-risk rank order). The page loads this array, computes a prefix sum once,
+  and a slider/preset-button control recomputes precision, recall and lift for any
+  review budget entirely client-side. Verified the simulator's numbers at k=500 match
+  `model_metrics.json`'s published Precision@500 (40.2%) and Recall@500 (25.1%) exactly,
+  confirmed with a headless-browser test evaluating `updateSim()` directly (see
+  `checks/gate_10.py` run log below is unaffected; this check was manual, not yet
+  encoded into the gate script).
+- **An honest "biggest finding" section** built around the Stage 7 result: rule-based
+  checks beat Isolation Forest on every injected type at a matched budget, which
+  contradicted the working hypothesis and was reported as measured.
+- **A real build-journey timeline**, stage by stage, sourced from `DECISIONS.md` and the
+  gate reports, not invented copy.
+- All new copy written and grepped for em dashes (zero found), per explicit user
+  instruction.
+
+New automated gate check after the redesign:
+
+```
+GATE 10: PASS
+C1 PASS: app/streamlit_app.py, app/requirements.txt and docs/index.html exist
+C2 PASS: data/dashboard/ has 13 files, 1.47 MB < 25 MB
+C3a PASS: app/streamlit_app.py parses as valid Python
+C3b PASS: load_dashboard_data() returned all 10 expected keys
+C4 PASS: no reference to data/processed or data/raw in app source
+C5 PASS: app/requirements.txt excludes scikit-learn, openpyxl, jupyter
+C6 PASS: 5 web_*.png screenshots >50KB
+```
+
+`docs/screenshots/web_*.png` were retaken against the redesigned, dark-themed app.
+`docs/screenshots/web_live_github_pages.png` will be retaken once the redesign is pushed
+and confirmed live (tracked as the final step of this pass, not yet done as of writing
+this addendum).
+
+**GATE: PASS** (redesign).

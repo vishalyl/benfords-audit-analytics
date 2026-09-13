@@ -12,6 +12,7 @@ One entry per stage gate.
 - **Stage 11** (2026-09-13) — 6 executed notebooks, generated README, methodology, data dictionary. `stage(11)` — PASS.
 - **Stage 12** (2026-09-13) — audit findings PDF workpaper, reproducible from metrics. `stage(12)` — PASS.
 - **Stage 13** (2026-09-13) — resume bullets, interview prep, publish checklist. `stage(13)` — PASS (mechanical checks; publish itself pending user decision).
+- **Post-publish redesign** (2026-09-13) — full dark-theme rebuild of `docs/index.html` and `app/streamlit_app.py`, a live in-browser re-scoring simulator built on a new `data/dashboard/rank_labels.json` export, a real build-journey narrative, and `docs/roadmap_status.md` (a trimmed, practical version of the Phase 2 roadmap). User feedback on the first live version: "not impressive at all." Verified the simulator's numbers exactly match published metrics; see `reports/gate_reports/gate_10.md` addendum.
 
 ## FINAL PROJECT CHECKLIST
 
